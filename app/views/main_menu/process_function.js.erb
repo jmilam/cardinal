@@ -1,0 +1,21 @@
+$('.function-notification').html("<%= escape_javascript render(partial: 'alert_area') %>")
+
+$('.custom-text-field').val( '')
+$('.submit').addClass('hidden')
+$('.next-function').removeClass('hidden')
+$('.submit').prop('disabled', false)
+$('.form-fields').children().remove()
+
+alert($('.function-header').text())
+if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "PLO"){
+	$('#function_tag_number').parent().removeClass('col-md-12')
+	$('#function_tag_number').parent().addClass('col-md-6')
+	$('.new_tag').removeClass('hidden')
+} else {
+	$('#function_tag_number').parent().removeClass('col-md-6')
+	$('#function_tag_number').parent().addClass('col-md-12')
+}
+
+setTimeout(function(){
+	$('.function-notification').children().remove();
+}, 5000);

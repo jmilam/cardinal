@@ -1,0 +1,60 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to 'Logout', login_destroy_path, method: :delete %></li>
+      </ul>
+  </div>
+</nav>
+<div class="col-md-4 fill_body">
+	<div class="function-table" style="height:60%;overflow-x: scroll;">
+			<% @cardinal_functions.each do |key,functions| %>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th style="text-align: center;background-color: peru;"><%= key %></th>
+						</tr>
+					</thead>
+					<tbody>
+						<% functions.each do |function| %>
+							<tr>
+								<td style="padding-top: 25px;padding-left:25px;"><%= function %></td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+				
+			<% end %>
+	</div>
+	<div class="function-notification" style="height:40%;">
+	</div>
+</div>
+
+<div class="col-md-6 col-md-offset-1 fill_body">
+	<div class="row">
+		<div class=" well-lg bg-danger">
+			<div class="text-center function-header">SELECT FUNCTION</div>
+		</div>
+	</div>
+
+	<div class="function-form">
+		<div class="row tag-number hidden" style="padding-top:15px;">
+			<%= form_for :function, url: process_function_path, remote: true do |f| %>
+				<%= f.hidden_field :function_type, class: 'function_type' %>
+				<div class="col-md-12">
+					<%= f.text_field :tag_number, autofocus: true, placeholder: 'Enter Existing Tag Number' , class: 'form-control custom-text-field' %>
+				</div>
+				<div class="col-md-6 new_tag text-center hidden", style="height:50px;margin-top:20px;">
+					<%= link_to "Create New Tag", nil, remote: true %> 
+				</div>
+
+				<div class="form-fields">
+				</div>
+
+				<div class="col-md-12 function-buttons">
+					<%= link_to 'Next', "#", remote: true, class: 'btn btn-block btn-success next-function', style: "height:50px;padding-top:15px;margin-top:10px;" %>
+					<%= f.submit class: 'btn btn-block btn-primary submit hidden', style: "height:50px;margin-top:10px;" %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

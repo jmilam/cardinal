@@ -1,0 +1,25 @@
+<div class="container">
+	<div class="panel panel-default" style="margin-top:10px;">
+	  <div class="panel-heading text-center">
+	    <h3 class="panel-title">Cardinal Login</h3>
+	  </div>
+	  <div class="panel-body">
+	    <p><div class="text-muted">User your QAD Credentials</div></p>
+	    <%= form_for :login, url: login_create_path do |f| %>
+	    	<%= f.label "Username" %>
+	    	<%= f.text_field :username, class: 'form-control' %>
+
+	    	<%= f.label "Password" %>
+	    	<%= f.password_field :password, class: 'form-control' %>
+
+	    	<%= f.label "Site" %>
+	    	<%= f.text_field :site, class: 'form-control' %>
+
+	    	<%= f.label "Printer" %>
+	    	<%= f.text_field :printer, class: 'form-control' %>
+
+	    	<%= f.submit "Login", class: 'btn btn-block btn-danger', style: "margin-top:10px;" %>
+	    <% end %>
+	  </div>
+	</div>
+</div>
