@@ -6,7 +6,6 @@ $('.next-function').removeClass('hidden')
 $('.submit').prop('disabled', false)
 $('.form-fields').children().remove()
 
-alert($('.function-header').text())
 if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "PLO"){
 	$('#function_tag_number').parent().removeClass('col-md-12')
 	$('#function_tag_number').parent().addClass('col-md-6')

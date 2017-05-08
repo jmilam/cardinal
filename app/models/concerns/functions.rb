@@ -19,7 +19,12 @@ class Functions
 	end
 
 	def print_label(api_url, tag_number, function_type)
-		uri = URI.parse("#{api_url}/transactions/#{function_type.downcase}")
+		uri = nil
+		if function_type == "por_print"
+			uri = URI.parse("#{api_url}/cardinal_printing/print_label")
+		else
+			uri = URI.parse("#{api_url}/transactions/#{function_type.downcase}")
+		end
 		params = build_params(function_type, nil, tag_number)
   	uri.query = URI.encode_www_form(params)
 		response = Net::HTTP.get_response(uri)
@@ -37,7 +42,7 @@ class Functions
 			por_data = request_params[:function]["item"].zip(request_params[:function]["line"], request_params[:function]["location"], request_params[:function]["receiving_qty"])
 			por_data.each do |por_array|
 				unless por_array[2].empty? || por_array[3].empty?
-					params = build_params(function_type, [request_params[:function]["tag_number"], 1], por_array)
+					params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], por_array)
 					uri.query = URI.encode_www_form(params)
 		  		response = Net::HTTP.get_response(uri)
 		  	end
@@ -74,6 +79,8 @@ class Functions
 			{item_num: request_params[:function][:item_number], from_loc: request_params[:function][:from_loc], from_site: request_params[:function][:from_site], to_site: request_params[:function][:to_site], to_loc: request_params[:function][:to_location], tag: request_params[:function][:tag_number], qty_to_move: request_params[:function][:move_qty], user_id: @user, type: request_params[:function][:function_type]}
 		when "POR"
 			{dev: @printer, po_num: tag_details[0], line: request_params[1], qty: request_params[3], label_count: tag_details[1], user: @user}
+		when "por_print"
+			{tag: request_params, printer: @printer, user: @user}
 		else
 		  p function
 		end

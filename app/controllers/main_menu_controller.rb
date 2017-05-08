@@ -16,7 +16,7 @@ class MainMenuController < ApplicationController
   def process_function
     @me = "Me"
     @function_type = params[:function][:function_type]
-    @function = Functions.new(session[:username], session[:site])
+    @function = Functions.new(session[:username], session[:site], session[:printer])
 
     unless @function_type == "POR"
       @response = @function.tag_details(@api_url, params[:function][:tag_number])
@@ -27,6 +27,16 @@ class MainMenuController < ApplicationController
     @response = @function.process_function(@api_url, @function_type, @response, params)
     @response = @function.parse_response_body(@response)
   	
+    if @function_type == "POR"
+      if @response["success"]
+        label_count = params[:function][:label_count][0].to_i
+        unless label_count <= 0
+          1.upto(label_count).each do |num|
+            @function.print_label(@api_url, @response["tag_num"], "por_print")
+          end
+        end
+      end 
+    end      
   	respond_to do |format|
   		format.js 
 		end

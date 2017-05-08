@@ -86,7 +86,7 @@ $(document).on 'ready', ->
 
 	buildPOR = (response) ->
 	  console.log response
-	  $('<div class="col-md-12" style="height:500px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
+	  $('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 	  
 	  $.each response.Lines, (index, value) ->
 	  	$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[line][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[location][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qty][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
