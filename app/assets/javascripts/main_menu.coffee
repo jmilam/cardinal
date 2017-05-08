@@ -84,6 +84,19 @@ $(document).on 'ready', ->
 
 	  return
 
+	buildPOR = (response) ->
+	  console.log response
+	  $('<div class="col-md-12" style="height:500px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
+	  
+	  $.each response.Lines, (index, value) ->
+	  	$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[line][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[location][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qty][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
+	  
+
+	  $('#function_from_location').val response.ttloc
+	  toggleDivHide $('.next-function'), $('.submit')
+
+	  return
+
 	buildPLO = (response, whole_response) ->
 		if $.type(response) == "object"
 			$('<div class="col-md-6 text-center"><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number" value=' + response.ttitem + '></div>').appendTo $('.form-fields')
@@ -104,7 +117,6 @@ $(document).on 'ready', ->
 			
 		$('#function_item_number').focus()
 		$('#function_item_number').on 'blur', ->
-			alert $(this).val()
 			ajaxItemNumber $(this).val()
 
 		$('.new_tag').addClass 'hidden'
@@ -136,6 +148,8 @@ $(document).on 'ready', ->
 		if $(this).text().match(/[^()]+/g)[0].trim() == "PLO"
 			changeDivSize 'col-md-12', 'col-md-6'
 			$('.new_tag').removeClass 'hidden'
+		else if $(this).text().match(/[^()]+/g)[0].trim() == "POR"
+			$('#function_tag_number').attr 'placeholder', "Enter Purchase Order Number"
 		else
 			changeDivSize 'col-md-6', 'col-md-12'
 			$('.new_tag').addClass 'hidden'
@@ -146,6 +160,7 @@ $(document).on 'ready', ->
 		switch $('.function-header').text().match(/[^()]+/g)[0].trim()
 		  when "TPT" then ajaxCardinalFunction '/main_menu/print_function', $('#function_tag_number').val(), $('.function-header').text().match(/[^()]+/g)[0].trim()
 		  when "GLB" then ajaxCardinalFunction '/main_menu/print_function', $('#function_tag_number').val(), $('.function-header').text().match(/[^()]+/g)[0].trim()
+		  when "POR" then ajaxCardinalFunction '/main_menu/purchase_order_details', $('#function_tag_number').val(), $('.function-header').text().match(/[^()]+/g)[0].trim()
 		  else
 			ajaxCardinalFunction '/main_menu/tag_details', $('#function_tag_number').val(), $('.function-header').text().match(/[^()]+/g)[0].trim()
 		$('.submit').attr 'disabled', false
@@ -185,6 +200,7 @@ $(document).on 'ready', ->
 	      		  when "PUL" then buildPUL response
 	      		  when "PLO" then buildPLO response, parseJSONResponse whole_response
 	      		  when "plo_item_number" then alert 'fill it in'
+	      		  when "POR" then buildPOR response
 	      		  else     		
 	      	else
         		response = parseJSONResponse response.result

@@ -30,11 +30,30 @@ class Functions
 		response = Net::HTTP.get_response(uri)
 	end
 
-	def process_function(api_url, function_type, tag_details, request_params)
+	def process_function(api_url, function_type, tag_details, request_params)	
+		response = nil
 		uri = URI.parse("#{api_url}/transactions/#{function_type.downcase}")
-		params = build_params(function_type, tag_details, request_params)
-		uri.query = URI.encode_www_form(params)
-  	response = Net::HTTP.get_response(uri)
+		if function_type == "POR"
+			por_data = request_params[:function]["item"].zip(request_params[:function]["line"], request_params[:function]["location"], request_params[:function]["receiving_qty"])
+			por_data.each do |por_array|
+				unless por_array[2].empty? || por_array[3].empty?
+					params = build_params(function_type, [request_params[:function]["tag_number"], 1], por_array)
+					uri.query = URI.encode_www_form(params)
+		  		response = Net::HTTP.get_response(uri)
+		  	end
+			end
+		else
+			params = build_params(function_type, tag_details, request_params)
+			uri.query = URI.encode_www_form(params)
+	  	response = Net::HTTP.get_response(uri)
+	  end
+	  response
+  end
+
+  def purchase_order_details(api_url, tag_number)
+  	uri = URI.parse("#{api_url}/transactions/po_details")
+		uri.query = URI.encode_www_form({po_number: tag_number, user: @user})
+		response = Net::HTTP.get_response(uri)
   end
 
 	def build_params(function, tag_details, request_params)
@@ -53,6 +72,8 @@ class Functions
 			{remarks: request_params, user: @user, printer: @printer}
 		when "PLO"
 			{item_num: request_params[:function][:item_number], from_loc: request_params[:function][:from_loc], from_site: request_params[:function][:from_site], to_site: request_params[:function][:to_site], to_loc: request_params[:function][:to_location], tag: request_params[:function][:tag_number], qty_to_move: request_params[:function][:move_qty], user_id: @user, type: request_params[:function][:function_type]}
+		when "POR"
+			{dev: @printer, po_num: tag_details[0], line: request_params[1], qty: request_params[3], label_count: tag_details[1], user: @user}
 		else
 		  p function
 		end
