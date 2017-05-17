@@ -39,14 +39,9 @@ class Functions
 		response = nil
 		uri = URI.parse("#{api_url}/transactions/#{function_type.downcase}")
 		if function_type == "POR"
-			por_data = request_params[:function]["item"].zip(request_params[:function]["line"], request_params[:function]["location"], request_params[:function]["receiving_qty"])
-			por_data.each do |por_array|
-				unless por_array[2].empty? || por_array[3].empty?
-					params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], por_array)
-					uri.query = URI.encode_www_form(params)
-		  		response = Net::HTTP.get_response(uri)
-		  	end
-			end
+			params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], request_params)
+			uri.query = URI.encode_www_form(params)
+  		response = Net::HTTP.get_response(uri)
 		else
 			params = build_params(function_type, tag_details, request_params)
 			uri.query = URI.encode_www_form(params)
@@ -78,7 +73,18 @@ class Functions
 		when "PLO"
 			{item_num: request_params[:function][:item_number], from_loc: request_params[:function][:from_loc], from_site: request_params[:function][:from_site], to_site: request_params[:function][:to_site], to_loc: request_params[:function][:to_location], tag: request_params[:function][:tag_number], qty_to_move: request_params[:function][:move_qty], user_id: @user, type: request_params[:function][:function_type]}
 		when "POR"
-			{dev: @printer, po_num: tag_details[0], line: request_params[1], qty: request_params[3], label_count: tag_details[1], user: @user}
+			lines = Array.new
+	    locations = Array.new
+	    qtys = Array.new
+	    request_params[:function][:lines].zip(request_params[:function][:locations], request_params[:function][:receiving_qtys]).each do |param|
+				unless param[1].empty? || param[2].empty?
+          lines << param[0]
+          locations << param[1]
+          qtys <<  param[2]
+        end
+       end
+       tag_details[1] = tag_details[1] == 0 ? 1 : tag_details[1]
+			{dev: @printer, po_num: tag_details[0], "lines[]" => lines, "locations[]" => locations.to_a, "qtys[]" => qtys, label_count: tag_details[1], user: @user}
 		when "por_print"
 			{tag: request_params, printer: @printer, user: @user}
 		else

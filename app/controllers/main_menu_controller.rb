@@ -1,7 +1,7 @@
 class MainMenuController < ApplicationController
   
   def index
-  	@cardinal_functions = {"Inventory" => ["PCT (Pallet Cycle Count)", "PDL (Pallet Delete)", "PLO (Pallet Load)", "PMV (Pallet Move)", "PUL (Pallet Unload)"], "Receiving" => ["POR (Purchase Order Receipt)"], "Labels" => ["TPT (Tag Reprint)", "GLB (General Label)", "Skid label"]}
+    @cardinal_functions = {"Inventory" => ["PCT (Pallet Cycle Count)", "PDL (Pallet Delete)", "PLO (Pallet Load)", "PMV (Pallet Move)", "PUL (Pallet Unload)"], "Receiving" => ["POR (Purchase Order Receipt)"], "Labels" => ["TPT (Tag Reprint)", "GLB (General Label)", "Skid Label Reprint"], "Shipping" => ["CAR (Carton Create)", "CTE (Carton Edit)", "SKD (Skid Create)"]}
     
     if session[:logged_in].nil?
       flash[:error] = "You are not logged in. Please log in and try again."
@@ -14,29 +14,22 @@ class MainMenuController < ApplicationController
   end
 
   def process_function
+    
     @me = "Me"
     @function_type = params[:function][:function_type]
     @function = Functions.new(session[:username], session[:site], session[:printer])
 
-    unless @function_type == "POR"
+    if @function_type == "POR"
+       
+      @response = @function.process_function(@api_url, @function_type, @response, params)
+      @response = @function.parse_response_body(@response)
+    
+    else @function_type
       @response = @function.tag_details(@api_url, params[:function][:tag_number])
       @response = @function.parse_response_body(@response)
       @response_data = @response
     end
-
-    @response = @function.process_function(@api_url, @function_type, @response, params)
-    @response = @function.parse_response_body(@response)
-  	
-    if @function_type == "POR"
-      if @response["success"]
-        label_count = params[:function][:label_count][0].to_i
-        unless label_count <= 0
-          1.upto(label_count).each do |num|
-            @function.print_label(@api_url, @response["tag_num"], "por_print")
-          end
-        end
-      end 
-    end      
+  
   	respond_to do |format|
   		format.js 
 		end

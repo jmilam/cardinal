@@ -89,7 +89,7 @@ $(document).on 'ready', ->
 	  $('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 	  
 	  $.each response.Lines, (index, value) ->
-	  	$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[line][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[location][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qty][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
+	  	$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
 	  
 
 	  $('#function_from_location').val response.ttloc
@@ -150,9 +150,15 @@ $(document).on 'ready', ->
 			$('.new_tag').removeClass 'hidden'
 		else if $(this).text().match(/[^()]+/g)[0].trim() == "POR"
 			$('#function_tag_number').attr 'placeholder', "Enter Purchase Order Number"
+		else if $(this).text().match(/[^()]+/g)[0].trim() == "CAR"
+			changeDivSize 'col-md-12', 'col-md-6'
+			$('.line_number').removeClass 'hidden'
+			$('.carton_tag').removeClass 'hidden'
 		else
 			changeDivSize 'col-md-6', 'col-md-12'
 			$('.new_tag').addClass 'hidden'
+			$('.line_number').addClass 'hidden'
+			$('.carton_tag').addClass 'hidden'
 
 		
 
@@ -201,6 +207,9 @@ $(document).on 'ready', ->
 	      		  when "PLO" then buildPLO response, parseJSONResponse whole_response
 	      		  when "plo_item_number" then alert 'fill it in'
 	      		  when "POR" then buildPOR response
+	      		  when "CAR" then alert 'CAR'
+	      		  when "CTE" then alert 'CTE'
+	      		  when "SKD" then alert 'SKD'
 	      		  else     		
 	      	else
         		response = parseJSONResponse response.result
