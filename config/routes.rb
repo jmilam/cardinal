@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get 'main_menu/print_function' => 'main_menu#print_function'
   get 'main_menu/new_tag' => 'main_menu#new_tag'
   get 'main_menu/purchase_order_details' => 'main_menu#purchase_order_details', as: :purchase_order_details
+  get 'main_menu/carton_function' => 'main_menu#carton_function', as: :carton_function
+  get 'main_menu/skid_create_cartons' => 'main_menu#skid_create_cartons'
   post 'main_menu/process_function' => 'main_menu#process_function', as: :process_function
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

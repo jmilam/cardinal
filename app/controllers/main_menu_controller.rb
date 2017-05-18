@@ -14,20 +14,21 @@ class MainMenuController < ApplicationController
   end
 
   def process_function
-    
-    @me = "Me"
     @function_type = params[:function][:function_type]
     @function = Functions.new(session[:username], session[:site], session[:printer])
 
     if @function_type == "POR"
-       
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
-    
+    elsif @function_type == "CAR"
+      @response = @function.process_function(@api_url, @function_type, @response, params)
+      @response = @function.parse_response_body(@response)
     else @function_type
       @response = @function.tag_details(@api_url, params[:function][:tag_number])
+
       @response = @function.parse_response_body(@response)
-      @response_data = @response
+      @response = @function.process_function(@api_url, @function_type, @response, params)
+      @response = @function.parse_response_body(@response)
     end
   
   	respond_to do |format|
@@ -76,6 +77,25 @@ class MainMenuController < ApplicationController
   def print_function
     @function = Functions.new(session[:username], session[:site], session[:printer])
     response = @function.print_label(@api_url,  params[:tag_number], params[:function_type])
+  end
+
+  def carton_function
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.sales_order_details(@api_url, params)
+
+    respond_to do |format|
+      format.json {render json: response.body}
+    end
+  end
+
+  def skid_create_cartons
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.skid_create_cartons(@api_url, params)
+
+    respond_to do |format|
+      format.json {render json: response.body}
+    end
+
   end
 
 end

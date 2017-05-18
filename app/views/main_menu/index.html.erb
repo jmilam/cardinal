@@ -11,7 +11,7 @@
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th style="text-align: center;background-color: peru;"><%= key %></th>
+							<th style="text-align: center;background-color: tan;color:white;"><%= key %></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -40,17 +40,23 @@
 		<div class="row tag-number hidden" style="padding-top:15px;">
 			<%= form_for :function, url: process_function_path, remote: true do |f| %>
 				<%= f.hidden_field :function_type, class: 'function_type' %>
-				<div class="col-md-12">
+				<div class="col-md-12 tag_number">
 					<%= f.text_field :tag_number, autofocus: true, placeholder: 'Enter Existing Tag Number' , class: 'form-control custom-text-field' %>
 				</div>
 				<div class="col-md-6 new_tag text-center hidden", style="height:50px;margin-top:20px;">
 					<%= link_to "Create New Tag", nil, remote: true %> 
 				</div>
+				<div class="col-md-6 sales_order text-center hidden", style="height:50px;">
+					<%= f.text_field :so_number, placeholder: 'Enter Sales Order Number...' , class: 'form-control custom-text-field' %>
+				</div>
 				<div class="col-md-6 line_number text-center hidden", style="height:50px;">
 					<%= f.text_field :line_number, placeholder: 'Enter Line Number' , class: 'form-control custom-text-field' %>
 				</div>
-				<div class="col-md-12 carton_tag text-center hidden" style="height:50px;">
+				<div class="col-md-12 carton_tag text-center hidden" style="height:50px;margin-top:10px;">
 					<%= f.text_field :carton_tag, placeholder: 'Enter Box Carton Item #' , class: 'form-control custom-text-field' %>
+				</div>
+				<div class="col-md-6 skid_number text-center hidden", style="height:50px;">
+					<%= f.text_field :skid_number, placeholder: 'Enter Skid Number' , class: 'form-control custom-text-field' %>
 				</div>
 
 				<div class="form-fields">

@@ -6,57 +6,63 @@ class Functions
 		@printer = printer
 	end
 
+	def get_request(url, request_params=nil)
+		uri = URI.parse(url)
+		uri.query = URI.encode_www_form(request_params)
+		Net::HTTP.get_response(uri)
+	end
+
 	def item_location(api_url, item_number)
-		uri = URI.parse("#{api_url}/transactions/item_location")
-    uri.query = URI.encode_www_form({item_num: item_number, user: @user})
-    Net::HTTP.get_response(uri)
+    get_request("#{api_url}/transactions/item_location",{item_num: item_number, user: @user})
 	end
 
 	def tag_details(api_url, tag_number)
-		uri = URI.parse("#{api_url}/transactions/tag_details")
-  	uri.query = URI.encode_www_form({tag: tag_number, user: @user, printer: @printer})
-		response = Net::HTTP.get_response(uri)
+		response = get_request("#{api_url}/transactions/tag_details", {tag: tag_number, user: @user, printer: @printer})
 	end
 
 	def print_label(api_url, tag_number, function_type)
-		uri = nil
 		if function_type == "por_print"
-			uri = URI.parse("#{api_url}/cardinal_printing/print_label")
+			url = "#{api_url}/cardinal_printing/print_label"
 		else
-			uri = URI.parse("#{api_url}/transactions/#{function_type.downcase}")
+			url = "#{api_url}/transactions/#{function_type.downcase}"
 		end
 		params = build_params(function_type, nil, tag_number)
-  	uri.query = URI.encode_www_form(params)
-		response = Net::HTTP.get_response(uri)
+		get_request(url, params)
 	end
 
 	def new_tag(api_url)
-		uri = URI.parse("#{api_url}/transactions/plo_next_pallet")
-		response = Net::HTTP.get_response(uri)
+		get_request("#{api_url}/transactions/plo_next_pallet", {})
 	end
 
 	def process_function(api_url, function_type, tag_details, request_params)	
-		response = nil
-		uri = URI.parse("#{api_url}/transactions/#{function_type.downcase}")
 		if function_type == "POR"
 			params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], request_params)
-			uri.query = URI.encode_www_form(params)
-  		response = Net::HTTP.get_response(uri)
+		elsif function_type == "CAR"
+			request_params[:function]["lines"].zip(request_params[:function]["qtys"], request_params[:function]["prev_packed"]).each do |line_data|
+			  unless line_data[1].empty?
+			  	params = build_params(function_type, tag_details, request_params, line_data)
+			  end
+			end
 		else
 			params = build_params(function_type, tag_details, request_params)
-			uri.query = URI.encode_www_form(params)
-	  	response = Net::HTTP.get_response(uri)
 	  end
-	  response
+	  get_request("#{api_url}/transactions/#{function_type.downcase}", params)
   end
 
   def purchase_order_details(api_url, tag_number)
-  	uri = URI.parse("#{api_url}/transactions/po_details")
-		uri.query = URI.encode_www_form({po_number: tag_number, user: @user})
-		response = Net::HTTP.get_response(uri)
+		get_request("#{api_url}/transactions/po_details", {po_number: tag_number, user: @user})
   end
 
-	def build_params(function, tag_details, request_params)
+  def sales_order_details(api_url, request_params)
+  	get_request("#{api_url}/transactions/sales_order_details", request_params)
+  end
+
+  def skid_create_cartons(api_url, request_params)
+  	params = build_params(request_params[:function_type], nil, request_params)
+  	get_request("#{api_url}/transactions/skid_create_cartons", params)
+  end
+
+	def build_params(function, tag_details, request_params, extra_params=nil)
 		case function
 		when "PCT"
 			{to_site: tag_details['result']['ttsite'], qty_to_move: request_params[:function][:move_qty], tag: request_params[:function][:tag_number], user_id: @user}
@@ -87,6 +93,10 @@ class Functions
 			{dev: @printer, po_num: tag_details[0], "lines[]" => lines, "locations[]" => locations.to_a, "qtys[]" => qtys, label_count: tag_details[1], user: @user}
 		when "por_print"
 			{tag: request_params, printer: @printer, user: @user}
+		when "CAR"
+			{so: request_params[:function]["so_number"], line: extra_params[0], carton_box: request_params[:function]["carton_tag"], pack_qty: extra_params[1], print: "N", prev_packed: extra_params[2], user: @user, printer:  @printer}
+		when "SKD"
+  		{so_number: request_params["so_number"], site: @site, user: @user}
 		else
 		  p function
 		end
