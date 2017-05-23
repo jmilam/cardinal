@@ -1,8 +1,24 @@
 class MainMenuController < ApplicationController
   
   def index
-    @cardinal_functions = {"Inventory" => ["PCT (Pallet Cycle Count)", "PDL (Pallet Delete)", "PLO (Pallet Load)", "PMV (Pallet Move)", "PUL (Pallet Unload)"], "Receiving" => ["POR (Purchase Order Receipt)"], "Labels" => ["TPT (Tag Reprint)", "GLB (General Label)", "Skid Label Reprint"], "Shipping" => ["CAR (Carton Create)", "CTE (Carton Edit)", "SKD (Skid Create)"]}
-    
+    @cardinal_functions = {"Inventory" => [["PCT", "Allows ability to change the quantity count on a pallet"], 
+                                          ["PDL", "Delete a pallet's inventory."], ["PLO", "Load new product to an existing tag or new tag."], 
+                                          ["PMV", "Move pallet from one location to another"], ["PUL", "Unload inventory from a pallet to a new location."]], 
+                            "Receiving" => [["POR", "View and receive items by a Purchase Order."]], 
+                            "Labels" => [["TPT", "Reprint a tag by number."], ["GLB", "Print a genearl label."], 
+                                        ["Skid Label Reprint", "Reprint Label by Skid Number"]], 
+                            "Shipping" => [["CAR", "Create a carton from existing items on a Purchase Order"], 
+                                          ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."]]# @cardinal_functions = {"Inventory" => [["PCT (Pallet Cycle Count)", "Allows ability to change the quantity count on a pallet"], 
+    #                                       ["PDL (Pallet Delete)", "Delete a pallet's inventory."], ["PLO (Pallet Load)", "Load new product to an existing tag or new tag."], 
+    #                                       ["PMV (Pallet Move)", "Move pallet from one location to another"], ["PUL (Pallet Unload)", "Unload inventory from a pallet to a new location."]], 
+    #                         "Receiving" => [["POR (Purchase Order Receipt)", "View and receive items by a Purchase Order."]], 
+    #                         "Labels" => [["TPT (Tag Reprint)", "Reprint a tag by number."], ["GLB (General Label)", "Print a genearl label."], 
+    #                                     ["Skid Label Reprint", "Reprint Label by Skid Number"]], 
+    #                         "Shipping" => [["CAR (Carton Create)", "Create a carton from existing items on a Purchase Order"], 
+    #                                       ["CTE (Carton Edit)", "Delete Carton."], ["SKD (Skid Create)", "Create a new skid and add cartons."]]
+                          }
+    @bg_colors = ["#F26101", "#2C3E50", "#6DBCDB", "#FC4349"]
+    @bg_counter = 0
     if session[:logged_in].nil?
       flash[:error] = "You are not logged in. Please log in and try again."
       redirect_to login_index_path
@@ -25,10 +41,10 @@ class MainMenuController < ApplicationController
       @response = @function.parse_response_body(@response)
     else @function_type
       @response = @function.tag_details(@api_url, params[:function][:tag_number])
-
       @response = @function.parse_response_body(@response)
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
+      @success = @response["success"]
     end
   
   	respond_to do |format|
@@ -75,6 +91,7 @@ class MainMenuController < ApplicationController
   end
 
   def print_function
+    params[:function_type] = params[:function_type] ==  "Skid Label Reprint" ? "skid_label" : params[:function_type]
     @function = Functions.new(session[:username], session[:site], session[:printer])
     response = @function.print_label(@api_url,  params[:tag_number], params[:function_type])
   end
@@ -95,7 +112,27 @@ class MainMenuController < ApplicationController
     respond_to do |format|
       format.json {render json: response.body}
     end
-
   end
 
+  def carton_box_validation
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.carton_box_validation(@api_url, params)
+    response = @function.parse_response_body(response)
+
+    if response["status"] == "Box Good"
+      response = {success: true, result: response["status"]}
+    else
+      response = {success: false, result: response["error"]}
+    end
+
+    respond_to do |format|
+      format.json {render json: response}
+    end
+  end
+
+  def add_cartons_to_skid
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.add_cartons_to_skid(@api_url, params)
+    response = @function.parse_response_body(response)
+  end
 end

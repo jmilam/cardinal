@@ -23,6 +23,8 @@ class Functions
 	def print_label(api_url, tag_number, function_type)
 		if function_type == "por_print"
 			url = "#{api_url}/cardinal_printing/print_label"
+		elsif function_type.downcase == "skid_label"
+			url = "#{api_url}/cardinal_printing/skid_label"
 		else
 			url = "#{api_url}/transactions/#{function_type.downcase}"
 		end
@@ -62,6 +64,14 @@ class Functions
   	get_request("#{api_url}/transactions/skid_create_cartons", params)
   end
 
+  def carton_box_validation(api_url, request_params)
+  	get_request("#{api_url}/transactions/carton_box_validation", {box: request_params[:box], user: @user})
+  end
+
+  def add_cartons_to_skid(api_url, request_params)
+  	get_request("#{api_url}/transactions/skid_create", {skid: request_params[:skid_num], user: @user, site: @site, cartons: request_params[:cartons]})
+  end
+
 	def build_params(function, tag_details, request_params, extra_params=nil)
 		case function
 		when "PCT"
@@ -97,6 +107,8 @@ class Functions
 			{so: request_params[:function]["so_number"], line: extra_params[0], carton_box: request_params[:function]["carton_tag"], pack_qty: extra_params[1], print: "N", prev_packed: extra_params[2], user: @user, printer:  @printer}
 		when "SKD"
   		{so_number: request_params["so_number"], site: @site, user: @user}
+  	when "skid_label"
+  		{site: @site, skid_num: request_params, printer: @printer, user_id: @user}
 		else
 		  p function
 		end

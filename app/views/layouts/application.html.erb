@@ -9,18 +9,24 @@
   </head>
 
   <body>	
-  	<div class="container" style="margin-top:60px;">
-	  	<% if flash[:notice] %>
-	      <div class="alert alert-success alert-dismissable">
-	        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	        <strong>Success!</strong> <%= flash[:notice] %>
-	      </div>
-	    <% elsif flash[:error] %>
-	      <div class="alert alert-danger alert-dismissable">
-	        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	        <strong>Error!</strong> <%= flash[:error] %>
-	      </div>
-	    <% end %>
+  	 <nav class="navbar navbar-inverse navbar-fixed-top">
+		  <div class="container">
+		    <ul class="nav navbar-nav navbar-right">
+		    	<% if flash[:notice] %>
+			      <li class="notification" style="padding-top:15px;color:#5cb85c;"><strong>Success!</strong> <%= flash[:notice] %></li>
+			    <% elsif flash[:error] %>
+			        <li class="notification" style="padding-top:15px;color:#d9534f"><strong>Error!</strong> <%= flash[:error] %></li>
+			      </div>
+			    <% else %>
+			    	<li class="notification" style="padding-top:15px;color:#5cb85c;"></li>
+			    <% end %>
+			    <% if current_page?('/main_menu/index') %>
+		      	<li><%= link_to 'Logout', login_destroy_path, method: :delete %></li>
+		      <% end %>
+		    </ul>
+		  </div>
+		</nav>
+  	<div class="container" style="margin-top:50px;">
 	  </div>
 	  
 	  <%= yield %>

@@ -13,7 +13,7 @@ class LoginController < ApplicationController
 			response = Net::HTTP.get_response(uri)
 
 			if JSON.parse(response.body)["success"]
-				flash[:notice] = "Welcome to cardinal #{params[:login][:username]}!"
+				flash[:notice] = "Welcome to Cardinal #{params[:login][:username]}!"
 				session[:logged_in] = true
 				session[:username] = params[:login][:username]
 				session[:site] = params[:login][:site]

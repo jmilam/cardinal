@@ -18,12 +18,13 @@
 html, body {
     margin: 0;
     height: 100%;
-    overflow: hidden;
+    #overflow: hidden;
+    background-color: #7FA6A1;
 }
 
 .fill_body {
 	height: 100%;
-	margin-top: 15px;
+
 }
 
 table tbody tr {
@@ -34,4 +35,10 @@ table tbody tr {
 	height: 50px;
 	text-align: center;
 	margin-bottom:10px;
+}
+
+.sidebar {
+	#background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+    margin-top: -5px;
 }

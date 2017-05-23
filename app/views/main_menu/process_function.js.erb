@@ -15,6 +15,12 @@ if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "PLO"){
 	$('#function_tag_number').parent().addClass('col-md-12')
 }
 
+if ("<%= @success %>"){
+  $('.notification').text("Successful! <%=@function_type %> transaction complete.")
+}
+else {
+  $('.notification').text("Error!")
+}
 setTimeout(function(){
-	$('.function-notification').children().remove();
+	$('.notification').text('')
 }, 5000);

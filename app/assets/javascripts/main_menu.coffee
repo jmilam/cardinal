@@ -3,10 +3,39 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $(document).on 'ready', ->
+
+	setTimeout ->
+		$('.notification').text ''
+	, 5000
+
+	$(".card").flip( {
+		trigger: 'hover'
+	})
+
+	$('.card').on 'flip:done', ->
+		console.log $(this).children().css('background-color')
+		if $(this).children().css('background-color') == 'rgb(184, 217, 184)'
+			$(this).children().css 'background-color', 'white'
+		else
+			$(this).children().css 'background-color', '#B8D9B8'
+
+	clearCards = ->
+		$.each $('.card'), (index, value) ->
+			if $(this).children().children().length == 0
+				$(this).children().children().css 'background-color', ''
+			else
+				$(this).children().children().css 'background-color', '#FFFFFF'
+
+	$('.cancel-function').on 'click', (e) ->
+		e.preventDefault()
+		$('.tag-number').addClass 'hidden'
+		$('.function-group').removeClass 'hidden'
+		clearCards
+
 	changeDivSize = (from_size, to_size) ->
-  	$('#function_tag_number').parent().removeClass from_size 
-		 $('#function_tag_number').parent().addClass to_size
-		 return
+		$('#function_tag_number').parent().removeClass from_size 
+		$('#function_tag_number').parent().addClass to_size
+		return
 
 	toggleDivHide = (div_hide, div_show) ->
 		div_hide.addClass 'hidden'
@@ -18,83 +47,85 @@ $(document).on 'ready', ->
 		return
 
 	buildPCT = (response) ->
-	  changeDivSize 'col-md-12', 'col-md-6'
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
-	  $('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
-	  $('<div class="col-md-6 col-md-offset-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
-	  toggleDivHide $('.next-function'), $('.submit')
-	  return
+		changeDivSize 'col-md-12', 'col-md-6'
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 col-md-offset-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
+		toggleDivHide $('.next-function'), $('.submit')
+		return
 
 	buildPDL = (response) ->
-	  ajaxItemNumber response.ttitem
+		ajaxItemNumber response.ttitem
 
-	  changeDivSize 'col-md-12', 'col-md-6'
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
+		changeDivSize 'col-md-12', 'col-md-6'
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 
-	  $('#function_from_location').val response.ttloc
-	  toggleDivHide $('.next-function'), $('.submit')
+		$('#function_from_location').val response.ttloc
+		toggleDivHide $('.next-function'), $('.submit')
 
-	  return
+		return
 
 	buildPMV = (response) ->
 
-	  changeDivSize 'col-md-12', 'col-md-6'
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
+		changeDivSize 'col-md-12', 'col-md-6'
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 
-	  $('#function_from_location').val response.ttloc
-	  toggleDivHide $('.next-function'), $('.submit')
+		$('#function_from_location').val response.ttloc
+		toggleDivHide $('.next-function'), $('.submit')
 
-	  return
+		return
 
 	buildPUL = (response) ->
-	  ajaxItemNumber response.ttitem
+		ajaxItemNumber response.ttitem
 
-	  changeDivSize 'col-md-12', 'col-md-6'
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
+		changeDivSize 'col-md-12', 'col-md-6'
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
+		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 
-	  $('<div class="col-md-6"><input placeholder="Move Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
+		$('<div class="col-md-6"><input placeholder="Move Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
 
-	  $('#function_from_location').val response.ttloc
-	  toggleDivHide $('.next-function'), $('.submit')
+		$('<div class="col-md-6" style="padding-top:15px;height:50px;margin-bottom:10px;"></div>').appendTo $('.form-fields')
 
-	  return
+		$('#function_from_location').val response.ttloc
+		toggleDivHide $('.next-function'), $('.submit')
+
+		return
 
 	buildPOR = (response) ->
-	  $('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
-	  
-	  $.each response.Lines, (index, value) ->
-	  	$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
-	  
+		$('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center custom-text-field"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
+		
+		$.each response.Lines, (index, value) ->
+			$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
+		
 
-	  $('#function_from_location').val response.ttloc
-	  toggleDivHide $('.next-function'), $('.submit')
+		$('#function_from_location').val response.ttloc
+		toggleDivHide $('.next-function'), $('.submit')
 
-	  return
+		return
 
 	buildPLO = (response, whole_response) ->
 		if $.type(response) == "object"
@@ -105,9 +136,9 @@ $(document).on 'ready', ->
 			$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
 			$('<div class="col-md-6"><input placeholder="From Site" class="form-control custom-text-field" type="text" name="function[from_site]" id="function_from_site" value=' + response.ttsite + '></div>').appendTo $('.form-fields')
 			$('<div class="col-md-6"><input placeholder="To Site" class="form-control custom-text-field" type="text" name="function[to_site]" id="function_to_site" value=' + response.ttsite + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_loc]" id="function_from_location" value=' + response.ttloc + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_loc]" id="function_to_location"></div>').appendTo $('.form-fields')
-			#$('#function_tag_number').val response.tttag
+			$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_loc]" id="function_from_location"></div>').appendTo $('.form-fields')
+			$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_loc]" id="function_to_location"  value=' + response.ttloc + '></div>').appendTo $('.form-fields')
+
 		else
 			$('#function_tag_number').val response
 			$('<div class="col-md-6 text-center"><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number"></div>').appendTo $('.form-fields')
@@ -128,57 +159,57 @@ $(document).on 'ready', ->
 
 	buildCAR = (response) ->
 		$('#function_carton_tag').focus()
-		$('<div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class="table table-striped carTable"><thead><tr><th></th><th>Qty to Pack</th><th class="text-center">Qty Packed</th><th class="text-center">Qty Ordered</th><th class="text-center">Qty Shipped</th><th class="text-center">Carton #</th><th class="text-center">Skid #</th><th class="text-center">Length</th><th class="text-center">Item Desc.</th></tr></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
+		$('<div class="col-md-12" style="height:250px;overflow-x: scroll;"><table class="table table-striped carTable"><thead><tr><th></th><th>Qty to Pack</th><th class="text-center">Qty Packed</th><th class="text-center">Qty Ordered</th><th class="text-center">Qty Shipped</th><th class="text-center">Carton #</th><th class="text-center">Skid #</th><th class="text-center">Length</th><th class="text-center">Item Desc.</th></tr></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 
 		$.each response.Lines, (index, value) ->
-	  	$('<tr><td><input value=' + value.ttli + ' class="form-control custom-text-field" type="hidden" name="function[lines][]" id="function_lines"></td><td><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[qtys][]" id="function_qtys"></td><td class="text-center"><input value=' + value.ttqtypck + ' type="hidden" name="function[prev_packed][]" id="function_prev_packed">' + value.ttqtypck + '</td><td class="text-center">' + value.ttqtyord + '</td><td class="text-center">' + value.ttqtyshp + '</td><td class="text-center">' + value.ttcarton + '</td><td class="text-center">' + value.ttskid + '</td><td class="text-center">' + value.ttlength + '</td><td class="text-center">' + value.ttdesc + '</td></tr>').appendTo $('.carTable tbody')
+			$('<tr><td><input value=' + value.ttli + ' class="form-control custom-text-field" type="hidden" name="function[lines][]" id="function_lines"></td><td><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[qtys][]" id="function_qtys"></td><td class="text-center"><input value=' + value.ttqtypck + ' type="hidden" name="function[prev_packed][]" id="function_prev_packed">' + value.ttqtypck + '</td><td class="text-center">' + value.ttqtyord + '</td><td class="text-center">' + value.ttqtyshp + '</td><td class="text-center">' + value.ttcarton + '</td><td class="text-center">' + value.ttskid + '</td><td class="text-center">' + value.ttlength + '</td><td class="text-center">' + value.ttdesc + '</td></tr>').appendTo $('.carTable tbody')
 		
 		toggleDivHide $('.next-function'), $('.submit')
 	
 	buildSKD = (response) ->
-		console.log response
 		$('<div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped skdTable"><thead><tr><th class="text-center">Line Number</th><th class="text-center">Carton Number</th><th class="text-center">Item</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 		
 		$.each response, (index, value) ->
-			$('<tr><td class="text-center">' + value.ttli + '</td><td class="text-center">' + value.ttcar.match(/[^|]+/g)[0] + '</td><td class="text-center">' + value.ttitem + '</td></tr>').appendTo $('.skdTable tbody')
+			$('<tr><td class="text-center">' + value.ttli + '</td><td class="text-center">' + value.ttcar.match(/[^|]+/g)[0].match(/[^i]+/g)[0] + '</td><td class="text-center">' + value.ttitem + '</td></tr>').appendTo $('.skdTable tbody')
 
 		$('.skdTable tbody tr').on 'click', ->
 			if $(this).attr 'selected'
 				$(this).css 'background-color', ''
-				console.log $(this).removeAttr 'selected'
+				$(this).removeAttr 'selected'
 			else
 				$(this).css 'background-color', 'rgba(92, 183, 92, 0.6)'
 				$(this).attr 'selected', 'selected'
+			
 
-		toggleDivHide $('.next-function'), $('.submit')
+		toggleDivHide $('.next-function'), $('.add-skid')
 
 	printTag = (tag_num) ->
-	  alert tag_num
+		alert tag_num
 
 	parseJSONResponse = (json) ->
 		JSON.parse JSON.stringify json
 
-					
-	$('.function-table td').on 'click', ->
+	$(".card").on 'click', ->
+		function_type = $(this).children().children('.front').text().trim().match(/[^()]+/g)[0].trim()
+		bg_color = $(this).siblings('div:eq(0)').css('background-color')
+		$('.panel-heading').css 'background-color', bg_color
+		$('.function-header').text function_type
+		$('.function_type').val function_type
+
+		$('.tag-number').removeClass 'hidden'
+		$('.function-group').addClass 'hidden'
+
 		toggleDivHide $('.submit'), $('.next-function')
 		$('.submit').prop 'disabled', false
 
 		clearScreen $('.form-fields')
-		
 		$('#function_tag_number').val ''
-		$('.function_type').val $(this).text().match(/[^()]+/g)[0].trim()
-		$('.function-header').text $(this).text()
-
-		$.each $('tr'), (index, value) ->
-			$(value).css 'background-color', ''
-		$(this).parent().css 'background-color', 'rgba(92, 183, 92, 0.6)'
-
-		$('.tag-number').removeClass 'hidden'
-
-		if $(this).text().match(/[^()]+/g)[0].trim() == "PLO"
+		
+		if function_type == "PLO"
 			changeDivSize 'col-md-12', 'col-md-6'
 			$('.new_tag').removeClass 'hidden'
-		else if $(this).text().match(/[^()]+/g)[0].trim() == "POR"
+			$('.add-skid').addClass 'hidden'
+		else if function_type == "POR"
 			changeDivSize 'col-md-6', 'col-md-12'
 			$('#function_tag_number').attr 'placeholder', "Enter Purchase Order Number"
 			$('#function_tag_number').removeClass 'hidden'
@@ -188,14 +219,16 @@ $(document).on 'ready', ->
 			$('.carton_tag').addClass 'hidden'	
 			$('.sales_order').addClass 'hidden'
 			$('.skid_number').addClass 'hidden'
-		else if $(this).text().match(/[^()]+/g)[0].trim() == "CAR"
+			$('.add-skid').addClass 'hidden'
+		else if function_type == "CAR"
 			changeDivSize 'col-md-12', 'col-md-6'
 			$('.tag_number').addClass 'hidden'
 			$('.sales_order').removeClass 'hidden'
 			$('.line_number').removeClass 'hidden'
 			$('.carton_tag').removeClass 'hidden'
 			$('.skid_number').addClass 'hidden'
-		else if $(this).text().match(/[^()]+/g)[0].trim() == "CTE"
+			$('.add-skid').addClass 'hidden'
+		else if function_type == "CTE"
 			$('#function_tag_number').addClass 'hidden'
 			$('.carton_tag').removeClass 'hidden'
 			$('.carton_tag').attr 'placeholder', 'Enter Carton #'
@@ -203,17 +236,20 @@ $(document).on 'ready', ->
 			$('.line_number').addClass 'hidden'
 			$('.sales_order').addClass 'hidden'
 			$('.skid_number').addClass 'hidden'
+			$('.add-skid').addClass 'hidden'
 			toggleDivHide $('.next-function'), $('.submit')
-		else if $(this).text().match(/[^()]+/g)[0].trim() == "SKD"
+		else if function_type == "SKD"
 			$('.sales_order').removeClass 'hidden'
+			$('.sales_order').children().val ''
 			$('.skid_number').removeClass 'hidden'
+			$('.skid_number').children().val ''
 			$('#function_tag_number').addClass 'hidden'
 			$('.new_tag').addClass 'hidden'
 			$('.line_number').addClass 'hidden'
 			$('.carton_tag').addClass 'hidden'	
+			$('.add-skid').addClass 'hidden'
 		else
 			changeDivSize 'col-md-6', 'col-md-12'
-			$('#function_tag_number').attr 'placeholder', "Enter Existing Tag Number"
 			$('#function_tag_number').removeClass 'hidden'
 			$('.tag_number').removeClass 'hidden'
 			$('.new_tag').addClass 'hidden'
@@ -221,28 +257,46 @@ $(document).on 'ready', ->
 			$('.carton_tag').addClass 'hidden'	
 			$('.sales_order').addClass 'hidden'
 			$('.skid_number').addClass 'hidden'
+			$('.add-skid').addClass 'hidden'
+
+			if $(".function-header").text() == "Skid Label Reprint"
+				$('#function_tag_number').attr 'placeholder', "Enter Existing Skid Number for reprint"
+			else if $(".function-header").text() == "GLB"
+				$('#function_tag_number').attr 'placeholder', 'Enter General Label Text (limit: 15 characters)'
+			else
+				$('#function_tag_number').attr 'placeholder', "Enter Existing Tag Number"
 
 	$('.next-function').on 'click', ->
 		switch $('.function-header').text().match(/[^()]+/g)[0].trim()
-		  when "TPT" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
-		  when "GLB" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
-		  when "POR" then ajaxCardinalFunction '/main_menu/purchase_order_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
-		  when "CAR" then ajaxCardinalFunction '/main_menu/carton_function', {so_number: $('#function_so_number').val(), line_number: $('#function_line_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
-		  when "SKD" then ajaxCardinalFunction '/main_menu/skid_create_cartons', {so_number: $('#function_so_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
-		  else
-			ajaxCardinalFunction '/main_menu/tag_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "TPT" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "GLB" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "POR" then ajaxCardinalFunction '/main_menu/purchase_order_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "CAR" then ajaxCardinalFunction '/main_menu/carton_function', {so_number: $('#function_so_number').val(), line_number: $('#function_line_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "SKD" then ajaxCardinalFunction '/main_menu/skid_create_cartons', {so_number: $('#function_so_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "Skid Label Reprint" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			else
+				ajaxCardinalFunction '/main_menu/tag_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 		$('.submit').attr 'disabled', false
 
 	$('.new_tag').on 'click', ->
 		ajaxCardinalFunction '/main_menu/new_tag', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 
+	$('.add-skid').on 'click', ->
+		cartons = []
+
+		$.each $('.skdTable tbody tr[selected=selected]'), (index,row) ->
+			cartons[index] = $(this).children('td:eq(1)').text()
+
+		cartons = cartons.toString()
+		ajaxCardinalFunction '/main_menu/add_cartons_to_skid', {skid_num: $('#function_skid_number').val(), cartons: cartons}
+
 	$('#function_carton_tag').on 'blur', ->
 		if $(this).val() == ""
-			alert "You must enter a valid carton number"
+			$('#function_carton_tag').css('border', '1px solid red')
 			$(this).focus()
 		else
-			alert 'success'
-
+			ajaxCardinalFunction '/main_menu/carton_box_validation', {box: $('#function_carton_tag').val()}
+			$('#function_carton_tag').css('border', '1px solid rgb(204,204,204)')
 
 	buildData = (selectedAction, response, whole_response) -> 
 		switch selectedAction
@@ -260,38 +314,55 @@ $(document).on 'ready', ->
 			else   
 
 	ajaxItemNumber = (item_number) ->
-    	$.ajax
-	      url: '/main_menu/item_location'
-	      type: 'GET'
-	      dataType: 'json'
-	      data: item_number: item_number
-	      success: (response) ->
-	      	if response.success == "Good"
-	      		response = parseJSONResponse response.Location
-	      		$('#function_to_location').val response
-	      	else
-        		response = parseJSONResponse response.success
+			$.ajax
+				url: '/main_menu/item_location'
+				type: 'GET'
+				dataType: 'json'
+				data: item_number: item_number
+				success: (response) ->
+					if response.success == "Good"
+						response = parseJSONResponse response.Location
+						if $('.function-header').text() == "PLO"
+							$('#function_from_location').val response
+						else
+							$('#function_to_location').val response
+					else
+						response = parseJSONResponse response.success
 
 	ajaxCardinalFunction = (url, params) ->
-	  	$.ajax
-	      url: url
-	      type: 'GET'
-	      dataType: 'json'
-	      data: params
-	      success: (response) ->
-	      	whole_response = response
+			$.ajax
+				url: url
+				type: 'GET'
+				dataType: 'json'
+				data: params
+				success: (response) ->
+					whole_response = response
+					if response.success == true
+						if response.result == undefined
+						else
+							response = parseJSONResponse response.result
 
-	      	if response.success == true
-	      		if response.result == undefined
-	      		else
-	      			response = parseJSONResponse response.result
+						#if $('.function-header').text().trim() == "CAR"
+						#	alert 'Valid Carton'
+						#else
+						#	alert 'Please type in valid Carton Item #'
+						#	$('#function_carton_tag').focus()
 
-	      		buildData params['function_type'], response, whole_response
-	      	else if response.status == "Good"
-	      		buildData params['function_type'], response, whole_response
-	      	else
-        		response = parseJSONResponse response.result
-        		buildData params['function_type'], response, whole_response
+						if url.trim() == '/main_menu/tag_details'
+						else
+							$('.notification').text 'Successful ' + $(".function-header").text() + ' Transaction!'
+							setTimeout ->
+								$('.notification').text ''
+							, 5000
+
+						buildData params['function_type'], response, whole_response
+					else if response.status == "Good"
+						$('.notification').text 'Successful ' + $(".function-header").text() + ' Transaction!'
+						buildData params['function_type'], response, whole_response
+					else
+						$('.notification').text 'Error ' + $(".function-header").text() + ' Transaction!'
+						response = parseJSONResponse response.result
+						buildData params['function_type'], response, whole_response
 
 		
 

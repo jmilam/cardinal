@@ -1,72 +1,74 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to 'Logout', login_destroy_path, method: :delete %></li>
-      </ul>
-  </div>
-</nav>
-<div class="col-md-4 fill_body">
-	<div class="function-table" style="height:70%;overflow-x: scroll;">
-			<% @cardinal_functions.each do |key,functions| %>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th style="text-align: center;background-color: tan;color:white;"><%= key %></th>
-						</tr>
-					</thead>
-					<tbody>
-						<% functions.each do |function| %>
-							<tr>
-								<td style="padding-top: 25px;padding-left:25px;"><%= function %></td>
-							</tr>
-						<% end %>
-					</tbody>
-				</table>
-				
+<div class="row function-group">
+	<div class="col-md-12 col-md-offset-1">
+	<% @cardinal_functions.each do |key,functions| %>
+		<div class="col-sm-12 col-md-5" style="background-color:#D7DADB;margin:10px;border:1px solid black;box-shadow: 5px 5px 5px #888888;">
+			<div class="row text-center" style="background-color:<%= @bg_colors[@bg_counter] %>;color:white;font-family: 'Times New Roman', Times, serif;border-bottom:1px solid black;"><h4><%= key %></h4></div>
+			<% 0.upto(5) do |num| %>
+			
+				<div class="card">
+					<% if functions[num].nil? %>
+						<div class="col-md-3" style="height:110px;margin:10px;font-family: 'Times New Roman', Times, serif;"></div>
+					<% else %>
+						<div class="col-md-3 text-center function" style="background-color:white;height:110px;margin:10px;font-family: 'Times New Roman', Times, serif;border-radius: 1em;">
+							<div class="front" style="line-height: 110px;vertical-align: middle;">
+								<%= functions[num][0].strip %>
+							</div>
+							<div class="back" style="padding-top:20px;">
+								<%= functions[num][1].strip %>
+							</div>
+						</div>
+					<% end %>
+				</div>
 			<% end %>
-	</div>
-	<div class="function-notification" style="height:40%;">
+		</div>
+		<% @bg_counter += 1 %>
+	<% end %>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-10 col-md-offset-1 function-form">
+		<div class="tag-number hidden" style="padding-top:15px;">
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h3 class="panel-title text-center function-header" style="color:white;"></h3>
+			  </div>
+			  <div class="panel-body">
+			    <%= form_for :function, url: process_function_path, remote: true do |f| %>
+						<%= f.hidden_field :function_type, class: 'function_type' %>
+						<div class="col-md-12 tag_number">
+							<%= f.text_field :tag_number, autofocus: true, placeholder: 'Enter Existing Tag Number' , class: 'form-control custom-text-field' %>
+						</div>
+						<div class="col-md-6 new_tag text-center hidden", style="height:50px;margin-top:20px;">
+							<%= link_to "Create New Tag", nil, remote: true %> 
+						</div>
+						<div class="col-md-6 sales_order text-center hidden", style="height:50px;">
+							<%= f.text_field :so_number, placeholder: 'Enter Sales Order Number...' , class: 'form-control custom-text-field' %>
+						</div>
+						<div class="col-md-6 line_number text-center hidden", style="height:50px;">
+							<%= f.text_field :line_number, placeholder: 'Enter Line Number' , class: 'form-control custom-text-field' %>
+						</div>
+						<div class="col-md-12 carton_tag text-center hidden" style="height:50px;margin-top:10px;">
+							<%= f.text_field :carton_tag, placeholder: 'Enter Box Carton Item #' , class: 'form-control custom-text-field' %>
+						</div>
+						<div class="col-md-6 skid_number text-center hidden", style="height:50px;">
+							<%= f.text_field :skid_number, placeholder: 'Enter Skid Number' , class: 'form-control custom-text-field' %>
+						</div>
 
-<div class="col-md-6 col-md-offset-1 fill_body">
-	<div class="row">
-		<div class=" well-lg bg-danger">
-			<div class="text-center function-header">SELECT FUNCTION</div>
-		</div>
-	</div>
+						<div class="form-fields">
+						</div>
 
-	<div class="function-form">
-		<div class="row tag-number hidden" style="padding-top:15px;">
-			<%= form_for :function, url: process_function_path, remote: true do |f| %>
-				<%= f.hidden_field :function_type, class: 'function_type' %>
-				<div class="col-md-12 tag_number">
-					<%= f.text_field :tag_number, autofocus: true, placeholder: 'Enter Existing Tag Number' , class: 'form-control custom-text-field' %>
-				</div>
-				<div class="col-md-6 new_tag text-center hidden", style="height:50px;margin-top:20px;">
-					<%= link_to "Create New Tag", nil, remote: true %> 
-				</div>
-				<div class="col-md-6 sales_order text-center hidden", style="height:50px;">
-					<%= f.text_field :so_number, placeholder: 'Enter Sales Order Number...' , class: 'form-control custom-text-field' %>
-				</div>
-				<div class="col-md-6 line_number text-center hidden", style="height:50px;">
-					<%= f.text_field :line_number, placeholder: 'Enter Line Number' , class: 'form-control custom-text-field' %>
-				</div>
-				<div class="col-md-12 carton_tag text-center hidden" style="height:50px;margin-top:10px;">
-					<%= f.text_field :carton_tag, placeholder: 'Enter Box Carton Item #' , class: 'form-control custom-text-field' %>
-				</div>
-				<div class="col-md-6 skid_number text-center hidden", style="height:50px;">
-					<%= f.text_field :skid_number, placeholder: 'Enter Skid Number' , class: 'form-control custom-text-field' %>
-				</div>
-
-				<div class="form-fields">
-				</div>
-
-				<div class="col-md-12 function-buttons">
-					<%= link_to 'Next', "#", remote: true, class: 'btn btn-block btn-success next-function', style: "height:50px;padding-top:15px;margin-top:10px;" %>
-					<%= f.submit "Submit", class: 'btn btn-block btn-primary submit hidden', style: "height:50px;margin-top:10px;" %>
-				</div>
-			<% end %>
+						<div class="col-md-6 function-buttons">
+							<%= link_to 'Next', "#", remote: true, class: 'btn btn-block btn-info next-function', style: "height:50px;padding-top:15px;margin-top:10px;" %>
+							<%= f.submit "Submit", class: 'btn btn-block btn-primary submit hidden', style: "height:50px;margin-top:10px;" %>
+							<%= link_to 'Add to Skid', "#", remote: true, class: 'btn btn-block btn-primary add-skid hidden', style: "height:50px;padding-top:15px;margin-top:10px;" %>
+						</div>
+						<div class="col-md-6">
+							<%= link_to 'Cancel', "#", class: 'btn btn-block btn-danger cancel-function', style: "height:50px;padding-top:15px;margin-top:10px;" %>
+						</div>
+					<% end %>
+			  </div>
+			</div>
+			
 		</div>
 	</div>
 </div>
