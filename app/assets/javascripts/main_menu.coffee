@@ -263,7 +263,7 @@ $(document).on 'ready', ->
 			$('.skid_number').addClass 'hidden'
 			$('.add-skid').addClass 'hidden'
 
-			if $(".function-header").text() == "Skid Label Reprint"
+			if $(".function-header").text() == "Skid"
 				$('#function_tag_number').attr 'placeholder', "Enter Existing Skid Number for reprint"
 			else if $(".function-header").text() == "GLB"
 				$('#function_tag_number').attr 'placeholder', 'Enter General Label Text (limit: 15 characters)'
@@ -277,7 +277,7 @@ $(document).on 'ready', ->
 			when "POR" then ajaxCardinalFunction '/main_menu/purchase_order_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			when "CAR" then ajaxCardinalFunction '/main_menu/carton_function', {so_number: $('#function_so_number').val(), line_number: $('#function_line_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			when "SKD" then ajaxCardinalFunction '/main_menu/skid_create_cartons', {so_number: $('#function_so_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
-			when "Skid Label Reprint" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "Skid" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			else
 				ajaxCardinalFunction '/main_menu/tag_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 		$('.submit').attr 'disabled', false
