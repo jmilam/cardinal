@@ -12,8 +12,12 @@ $(document).on 'ready', ->
 		trigger: 'hover'
 	})
 
+	#$('.info-card').on 'click', (e) ->
+	  #e.preventDefault()
+	  #$(this).parents('.card:first').flip('toggle')
+	  #alert 'click'
+
 	$('.card').on 'flip:done', ->
-		console.log $(this).children().css('background-color')
 		if $(this).children().css('background-color') == 'rgb(184, 217, 184)'
 			$(this).children().css 'background-color', 'white'
 		else

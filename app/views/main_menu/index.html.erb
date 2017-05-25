@@ -1,16 +1,17 @@
 <div class="row function-group">
-	<div class="col-md-12 col-md-offset-1">
+	<div class="col-sm-12 col-sm-offset-1 col-md-12 col-md-offset-1">
 	<% @cardinal_functions.each do |key,functions| %>
-		<div class="col-sm-12 col-md-5" style="background-color:#D7DADB;margin:10px;border:1px solid black;box-shadow: 5px 5px 5px #888888;">
+		<div class="col-sm-5 col-md-5" style="background-color:#7FA6A1;margin:10px;border:1px solid black;box-shadow: 5px 5px 5px #888888;">
 			<div class="row text-center" style="background-color:<%= @bg_colors[@bg_counter] %>;color:white;font-family: 'Times New Roman', Times, serif;border-bottom:1px solid black;"><h4><%= key %></h4></div>
 			<% 0.upto(5) do |num| %>
 			
 				<div class="card">
 					<% if functions[num].nil? %>
-						<div class="col-md-3" style="height:110px;margin:10px;font-family: 'Times New Roman', Times, serif;"></div>
+						<div class="col-sm-4 col-md-3" style="height:110px;margin:10px;font-family: 'Times New Roman', Times, serif;"></div>
 					<% else %>
-						<div class="col-md-3 text-center function" style="background-color:white;height:110px;margin:10px;font-family: 'Times New Roman', Times, serif;border-radius: 1em;">
+						<div class="col-sm-4 col-md-3 text-center function" style="background-color:white;height:110px;margin:10px;font-family: 'Times New Roman', Times, serif;border-radius: 1em;">
 							<div class="front" style="line-height: 110px;vertical-align: middle;">
+								<span class="glyphicon glyphicon-info-sign info-card" aria-hidden="true" style="color:#428bca"></span>
 								<%= functions[num][0].strip %>
 							</div>
 							<div class="back" style="padding-top:20px;">
@@ -26,7 +27,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-10 col-md-offset-1 function-form">
+	<div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 function-form">
 		<div class="tag-number hidden" style="padding-top:15px;">
 			<div class="panel panel-default">
 			  <div class="panel-heading">
