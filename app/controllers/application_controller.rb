@@ -7,8 +7,8 @@ class ApplicationController < ActionController::Base
   	if Rails.env == "test"
 			@api_url = "http://webapidev.enduraproducts.com/api/endura"
 		elsif Rails.env == "development"
-			#@api_url = "http://webapidev.enduraproducts.com/api/endura"
-			@api_url = "http://localhost:3000/api/endura"
+			@api_url = "http://webapidev.enduraproducts.com/api/endura"
+			#@api_url = "http://localhost:3000/api/endura"
 		elsif Rails.env == "production"
 			@api_url = "http://webapi.enduraproducts.com/api/endura"
 		end
