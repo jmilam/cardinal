@@ -1,5 +1,6 @@
 $('.function-notification').html("<%= escape_javascript render(partial: 'alert_area') %>")
 
+
 $('.custom-text-field').val( '')
 $('.submit').addClass('hidden')
 $('.next-function').removeClass('hidden')
@@ -17,6 +18,11 @@ if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "PLO"){
 
 if ("<%= @success %>"){
   $('.notification').text("Successful! <%=@function_type %> transaction complete.")
+  if ("<%= @function_type %>" == "PCT"){
+   	$('#myModal').modal('show')
+  } else if ("<%= @function_type %>" == "PLO"){
+  	$('#myModal').modal('show');
+  }
 }
 else {
   $('.notification').text("Error!")

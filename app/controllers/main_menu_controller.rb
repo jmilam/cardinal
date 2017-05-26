@@ -36,6 +36,10 @@ class MainMenuController < ApplicationController
     if @function_type == "POR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
+      # if @response["success"]
+      #   p @response
+      #   @function.print_label(@api_url,  params[:tag_number], "por_print")
+      # end
     elsif @function_type == "CAR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
@@ -60,7 +64,6 @@ class MainMenuController < ApplicationController
     respond_to do |format|
       format.json {render json: response}
     end
-
   end
 
   def tag_details
@@ -84,9 +87,24 @@ class MainMenuController < ApplicationController
   def purchase_order_details
     @function = Functions.new(session[:username], session[:site])
     response = @function.purchase_order_details(@api_url, params[:tag_number])
+    response = @function.parse_response_body(response)
+    lines = response["result"]["Lines"]
+    locations = response["result"]["Locs"]
+
+    lines.each do |line|
+      line["locations"] = Array.new
+      locations.each_with_index do |loc, idx|
+        if loc["ttpart"] == line["ttitem"]
+          line["locations"] << loc["ttlocs"]
+          locations.delete_at idx
+        end
+      end
+    end
+
+    response["result"]["Lines"] = lines
 
     respond_to do |format|
-      format.json {render json: response.body}
+      format.json {render json: response}
     end
   end
 

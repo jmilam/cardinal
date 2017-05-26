@@ -123,7 +123,12 @@ $(document).on 'ready', ->
 		$('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center custom-text-field"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 		
 		$.each response.Lines, (index, value) ->
-			$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
+			$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><select class="form-control custom-text-field loc_select" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
+
+			location_div = $('.loc_select:eq(' + index + ')')
+			$.each value.locations, (index, value) ->
+				location_div.append '<option value=' + value + '>' + value + '</option>'
+
 		
 
 		$('#function_from_location').val response.ttloc
@@ -192,6 +197,15 @@ $(document).on 'ready', ->
 
 	parseJSONResponse = (json) ->
 		JSON.parse JSON.stringify json
+
+	$('.printYes').on 'click', ->
+	  $('#myModal').modal 'hide'
+	  ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#printTagNum').text(), function_type: 'por_print'}
+	  $('#printTagNum').text ''
+
+	$('.printNo').on 'click', ->
+	  $('#myModal').modal 'hide'
+	  $('#printTagNum').text ''
 
 	$(".card").on 'click', ->
 		function_type = $(this).children().children('.front').text().trim().match(/[^()]+/g)[0].trim()
@@ -279,6 +293,7 @@ $(document).on 'ready', ->
 			when "SKD" then ajaxCardinalFunction '/main_menu/skid_create_cartons', {so_number: $('#function_so_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			when "Skid" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			else
+				$('#printTagNum').text $('#function_tag_number').val()
 				ajaxCardinalFunction '/main_menu/tag_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 		$('.submit').attr 'disabled', false
 
