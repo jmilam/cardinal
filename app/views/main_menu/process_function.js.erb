@@ -1,6 +1,5 @@
 $('.function-notification').html("<%= escape_javascript render(partial: 'alert_area') %>")
 
-
 $('.custom-text-field').val( '')
 $('.submit').addClass('hidden')
 $('.next-function').removeClass('hidden')
@@ -30,3 +29,5 @@ else {
 setTimeout(function(){
 	$('.notification').text('')
 }, 5000);
+
+$('#spin').data('spinner').stop();

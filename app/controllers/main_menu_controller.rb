@@ -8,14 +8,7 @@ class MainMenuController < ApplicationController
                             "Labels" => [["TPT", "Reprint a tag by number."], ["GLB", "Print a genearl label."], 
                                         ["Skid", "Reprint Label by Skid Number"]], 
                             "Shipping" => [["CAR", "Create a carton from existing items on a Purchase Order"], 
-                                          ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."]]# @cardinal_functions = {"Inventory" => [["PCT (Pallet Cycle Count)", "Allows ability to change the quantity count on a pallet"], 
-    #                                       ["PDL (Pallet Delete)", "Delete a pallet's inventory."], ["PLO (Pallet Load)", "Load new product to an existing tag or new tag."], 
-    #                                       ["PMV (Pallet Move)", "Move pallet from one location to another"], ["PUL (Pallet Unload)", "Unload inventory from a pallet to a new location."]], 
-    #                         "Receiving" => [["POR (Purchase Order Receipt)", "View and receive items by a Purchase Order."]], 
-    #                         "Labels" => [["TPT (Tag Reprint)", "Reprint a tag by number."], ["GLB (General Label)", "Print a genearl label."], 
-    #                                     ["Skid Label Reprint", "Reprint Label by Skid Number"]], 
-    #                         "Shipping" => [["CAR (Carton Create)", "Create a carton from existing items on a Purchase Order"], 
-    #                                       ["CTE (Carton Edit)", "Delete Carton."], ["SKD (Skid Create)", "Create a new skid and add cartons."]]
+                                          ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."]]
                           }
     @bg_colors = ["#F26101", "#2C3E50", "#6DBCDB", "#FC4349"]
     @bg_counter = 0

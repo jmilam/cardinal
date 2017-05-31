@@ -12,6 +12,34 @@ $(document).on 'ready', ->
 		trigger: 'hover'
 	})
 
+	opts = 
+		  lines: 13
+		  length: 16
+		  width: 14
+		  radius: 14
+		  scale: 0.75
+		  corners: 1
+		  color: '#000'
+		  opacity: 0.2
+		  rotate: 0
+		  direction: 1
+		  speed: 0.8
+		  trail: 60
+		  fps: 20
+		  zIndex: 2e9
+		  className: 'spinner'
+		  top: '50%'
+		  left: '50%'
+		  shadow: false
+		  hwaccel: false
+		  position: 'absolute'
+
+	$('.submit').on 'click', (e) ->
+	  target = document.getElementById('spin')
+	  spinner = new Spinner(opts).spin(target)
+	  $(target).data('spinner', spinner)
+
+
 	#$('.info-card').on 'click', (e) ->
 	  #e.preventDefault()
 	  #$(this).parents('.card:first').flip('toggle')
@@ -120,10 +148,10 @@ $(document).on 'ready', ->
 		return
 
 	buildPOR = (response) ->
-		$('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center custom-text-field"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
+		$('<div class="col-md-12"><input type="text" placeholder="How many tags to print?" name="function[label_count][]" id="function_label_count" class="form-control text-center custom-text-field"></div><div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped porTable"><thead><tr><th>Item Number</th><th class="text-center">Line Num</th><th class="text-center">Location</th><th class="text-center">Open Qty</th><th class="text-center">Receiving Qty</th><th class="text-center">Multiplier</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 		
 		$.each response.Lines, (index, value) ->
-			$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><select class="form-control custom-text-field loc_select" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder=" Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td></tr>').appendTo $('.porTable tbody')
+			$('<tr><td><input value=' + value.ttitem + ' type="hidden" name="function[item][]" id="function_item">' + value.ttitem + '</td><td class="text-center"><input value=' + value.ttline + ' type="hidden" name="function[lines][]" id="function_line">' + value.ttline + '</td><td><select class="form-control custom-text-field loc_select" name="function[locations][]" id="function_location"></td><td class="text-center">' + value.ttqtyopen + '</td><td><input placeholder="Receiving Qty" class="form-control custom-text-field" type="text" name="function[receiving_qtys][]" id="function_receiving_qty"></td><td><input placeholder="Multiplier" class="form-control custom-text-field" type="text" name="function[receiving_multipliers][]" id="function_receiving_multipliers" value="1"></td></tr>').appendTo $('.porTable tbody')
 
 			location_div = $('.loc_select:eq(' + index + ')')
 			$.each value.locations, (index, value) ->

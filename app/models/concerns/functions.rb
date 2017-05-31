@@ -41,6 +41,10 @@ class Functions
 		result = nil
 		if function_type == "POR"
 			params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], request_params)
+			p params
+			#1.upto(multiplier) do
+		 		result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
+		 	#end
 		elsif function_type == "CAR"
 			request_params[:function]["lines"].zip(request_params[:function]["qtys"], request_params[:function]["prev_packed"], request_params[:function]["multipliers"]).each do |line_data|
 			  multiplier =  line_data[3].to_i
@@ -48,12 +52,14 @@ class Functions
 			  	params = build_params(function_type, tag_details, request_params, line_data)
 			  end
 			end
+			1.upto(multiplier) do
+		 		result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
+		 	end
 		else
 			params = build_params(function_type, tag_details, request_params)
+			result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
 	  end
-	  1.upto(multiplier) do
-	 		result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
-	 	end
+	  
 	 	result
   end
 
@@ -98,15 +104,18 @@ class Functions
 			lines = Array.new
 	    locations = Array.new
 	    qtys = Array.new
-	    request_params[:function][:lines].zip(request_params[:function][:locations], request_params[:function][:receiving_qtys]).each do |param|
+	    multipliers = Array.new
+
+	    request_params[:function][:lines].zip(request_params[:function][:locations], request_params[:function][:receiving_qtys], request_params[:function][:receiving_multipliers]).each do |param|
 				unless param[1].empty? || param[2].empty?
           lines << param[0]
           locations << param[1]
           qtys <<  param[2]
+          multipliers << param[3]
         end
        end
        tag_details[1] = tag_details[1] == 0 ? 1 : tag_details[1]
-			{dev: @printer, po_num: tag_details[0], "lines[]" => lines, "locations[]" => locations.to_a, "qtys[]" => qtys, label_count: tag_details[1], user: @user}
+			{dev: @printer, po_num: tag_details[0], "lines[]" => lines, "locations[]" => locations.to_a, "qtys[]" => qtys, "multipliers[]" => multipliers, label_count: tag_details[1], user: @user}
 		when "por_print"
 			{tag: request_params, printer: @printer, user: @user}
 		when "CAR"
