@@ -37,10 +37,13 @@ class Functions
 	end
 
 	def process_function(api_url, function_type, tag_details, request_params)	
+		multiplier = 1
+		result = nil
 		if function_type == "POR"
 			params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], request_params)
 		elsif function_type == "CAR"
-			request_params[:function]["lines"].zip(request_params[:function]["qtys"], request_params[:function]["prev_packed"]).each do |line_data|
+			request_params[:function]["lines"].zip(request_params[:function]["qtys"], request_params[:function]["prev_packed"], request_params[:function]["multipliers"]).each do |line_data|
+			  multiplier =  line_data[3].to_i
 			  unless line_data[1].empty?
 			  	params = build_params(function_type, tag_details, request_params, line_data)
 			  end
@@ -48,7 +51,10 @@ class Functions
 		else
 			params = build_params(function_type, tag_details, request_params)
 	  end
-	  get_request("#{api_url}/transactions/#{function_type.downcase}", params)
+	  1.upto(multiplier) do
+	 		result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
+	 	end
+	 	result
   end
 
   def purchase_order_details(api_url, tag_number)

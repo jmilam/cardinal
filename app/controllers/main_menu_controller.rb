@@ -36,10 +36,6 @@ class MainMenuController < ApplicationController
     if @function_type == "POR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
-      # if @response["success"]
-      #   p @response
-      #   @function.print_label(@api_url,  params[:tag_number], "por_print")
-      # end
     elsif @function_type == "CAR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
