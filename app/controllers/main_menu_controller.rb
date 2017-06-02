@@ -8,7 +8,7 @@ class MainMenuController < ApplicationController
                             "Labels" => [["TPT", "Reprint a tag by number."], ["GLB", "Print a genearl label."], 
                                         ["Skid", "Reprint Label by Skid Number"]], 
                             "Shipping" => [["CAR", "Create a carton from existing items on a Purchase Order"], 
-                                          ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."]]
+                                          ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."], ["SHP", "Shipping"]]
                           }
     @bg_colors = ["#F26101", "#2C3E50", "#6DBCDB", "#FC4349"]
     @bg_counter = 0
@@ -32,6 +32,16 @@ class MainMenuController < ApplicationController
     elsif @function_type == "CAR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
+    elsif @function_type == "SHP"
+      params["effective_date"] =  params[:function]["tag_number"].empty? ? Date.today.strftime('%m/%d/%y') : params[:function]["tag_number"]
+      @response = @function.process_function(@api_url, @function_type, @response, params)
+      
+      if @response[:success]
+        @response = @function.get_ship_lines(@api_url, params)
+        @response = @function.parse_response_body(@response)
+        @success = @response["success"]
+      end
+
     else @function_type
       @response = @function.tag_details(@api_url, params[:function][:tag_number])
       @response = @function.parse_response_body(@response)
@@ -141,5 +151,15 @@ class MainMenuController < ApplicationController
     @function = Functions.new(session[:username], session[:site], session[:printer])
     response = @function.add_cartons_to_skid(@api_url, params)
     response = @function.parse_response_body(response)
+  end
+
+  def ship_lines
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.get_ship_lines(@api_url, params)
+    response = @function.parse_response_body(response)
+
+    respond_to do |format|
+      format.json {render json: response}
+    end
   end
 end

@@ -41,10 +41,7 @@ class Functions
 		result = nil
 		if function_type == "POR"
 			params = build_params(function_type, [request_params[:function]["tag_number"], request_params[:function]["label_count"][0].to_i], request_params)
-			p params
-			#1.upto(multiplier) do
-		 		result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
-		 	#end
+		 	result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
 		elsif function_type == "CAR"
 			request_params[:function]["lines"].zip(request_params[:function]["qtys"], request_params[:function]["prev_packed"], request_params[:function]["multipliers"]).each do |line_data|
 			  multiplier =  line_data[3].to_i
@@ -55,6 +52,28 @@ class Functions
 			1.upto(multiplier) do
 		 		result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
 		 	end
+		elsif function_type == "SHP"
+			errors = []
+			request_lines = request_params[:function]["lines"].zip(request_params[:function]["items"], request_params[:function]["b_o"], request_params[:function]["qty_to_ship"], request_params[:function]["location"], request_params[:function]["tag_ref"])
+			request_lines.each do |line|
+				if line[3].to_i <= 0
+					next 
+				else
+					line[2] = line[2] == "true" ? "yes" : "no"
+				  params = {string: "#{request_params['function']['so_number']},#{line[0]},#{request_params["effective_date"]},#{line[2]},#{line[3]},#{line[4]},#{line[5]}", user: @user}
+				  response = parse_response_body(get_request("#{api_url}/transactions/#{function_type.downcase}", params))
+
+				  if response["success"] == false
+				  	errors << response["result"]
+				  end
+				end
+			end
+
+			if errors.empty?
+				result = {success: true, result: "No Errors"}
+			else
+				result = {success: false, result: errors}
+			end
 		else
 			params = build_params(function_type, tag_details, request_params)
 			result = get_request("#{api_url}/transactions/#{function_type.downcase}", params)
@@ -82,6 +101,10 @@ class Functions
 
   def add_cartons_to_skid(api_url, request_params)
   	get_request("#{api_url}/transactions/skid_create", {skid: request_params[:skid_num], user: @user, site: @site, cartons: request_params[:cartons]})
+  end
+
+  def get_ship_lines(api_url, request_params)
+  	get_request("#{api_url}/transactions/ship_lines", {so_number: request_params[:so_number], user: @user})
   end
 
 	def build_params(function, tag_details, request_params, extra_params=nil)

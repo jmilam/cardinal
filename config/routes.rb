@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'main_menu/skid_create_cartons' => 'main_menu#skid_create_cartons'
   get 'main_menu/carton_box_validation' => 'main_menu#carton_box_validation'
   get 'main_menu/add_cartons_to_skid' => 'main_menu#add_cartons_to_skid'
+  get 'main_menu/ship_lines' => 'main_menu#ship_lines'
   get 'main_menu/tag_details' => 'main_menu#tag_details', as: :tag_details
   get 'main_menu/item_location' => 'main_menu#item_location', as: :item_location
   get 'main_menu/purchase_order_details' => 'main_menu#purchase_order_details', as: :purchase_order_details

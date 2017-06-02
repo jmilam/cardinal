@@ -34,11 +34,19 @@ $(document).on 'ready', ->
 		  hwaccel: false
 		  position: 'absolute'
 
+	$('#function_skid_number').on 'keyup', ->
+	  if $(this).val().length == 2
+	  	$('#function_skid_number').val $('#function_skid_number').val() + '/'
+	  else if $(this).val().length == 5
+	  	$('#function_skid_number').val $('#function_skid_number').val() + '/'
+
 	$('.submit').on 'click', (e) ->
 	  target = document.getElementById('spin')
 	  spinner = new Spinner(opts).spin(target)
 	  $(target).data('spinner', spinner)
 
+	  $.each $('.bo_check:checked'), (index, value) ->
+	    $(this).siblings().first().attr 'disabled', true
 
 	#$('.info-card').on 'click', (e) ->
 	  #e.preventDefault()
@@ -77,6 +85,7 @@ $(document).on 'ready', ->
 	clearScreen = (div_group) ->
 		div_group.children().remove()
 		return
+
 
 	buildPCT = (response) ->
 		changeDivSize 'col-md-12', 'col-md-6'
@@ -220,6 +229,21 @@ $(document).on 'ready', ->
 
 		toggleDivHide $('.next-function'), $('.add-skid')
 
+	buildSHP = (response) ->
+		console.log response
+		$('<div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped shpTable"><thead><tr><th class="text-center">Line Number</th><th></th><th class="text-center">Item</th><th></th><th class="text-center">Qty Ordered</th><th class="text-center">Qty Shipped</th><th class="text-center">Open Qty</th><th class="text-center">Cancel B/O</th><th class="text-center">Qty To Ship</th><th class="text-center">Location</th><th class="text-center">Tag/Ref</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
+
+		$.each response, (index, value) ->
+			$('<tr><td class="text-center">' + value.ttline + '</td><td><input value=' + value.ttline + ' class="form-control custom-text-field" type="hidden" name="function[lines][]" id="function_lines"></td><td class="text-center">' + value.ttitem + '</td><td><input value=' + value.ttitem + ' class="form-control custom-text-field" type="hidden" name="function[items][]" id="function_items"></td><td class="text-center">' + value.ttqtyord + '</td><td class="text-center">' + value.ttqtyshipd + '</td><td class="text-center">' + value.ttqtytoship + '</td><td class="text-center"><input type="hidden" value=false name="function[b_o][]" id="b_o_hidden"><input type="checkbox" name="function[b_o][]" value=false, class="bo_check"></td><td><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[qty_to_ship][]" id="function_qty_to_ship" ></td><td><input placeholder="Location" class="form-control custom-text-field" type="text" name="function[location][]" id="function_location" ></td><td><input placeholder="Tag/Ref" class="form-control custom-text-field" type="text" name="function[tag_ref][]" id="function_tag_ref" ></td></tr>').appendTo $('.shpTable tbody')
+
+		$('.bo_check').on 'change', ->
+		  if $(this).is ':checked'
+		  	$(this).val true
+		  else
+		    $(this).val false
+
+		toggleDivHide $('.next-function'), $('.submit')
+	
 	printTag = (tag_num) ->
 		alert tag_num
 
@@ -294,6 +318,18 @@ $(document).on 'ready', ->
 			$('.line_number').addClass 'hidden'
 			$('.carton_tag').addClass 'hidden'	
 			$('.add-skid').addClass 'hidden'
+			$('#function_skid_number').attr 'placeholder', 'Skid Number'
+		else if function_type == "SHP"
+			$('.sales_order').removeClass 'hidden'
+			$('.sales_order').children().val ''
+			$('.skid_number').removeClass 'hidden'
+			$('.skid_number').children().val ''
+			$('#function_tag_number').addClass 'hidden'
+			$('.new_tag').addClass 'hidden'
+			$('.line_number').addClass 'hidden'
+			$('.carton_tag').addClass 'hidden'	
+			$('.add-skid').addClass 'hidden'
+			$('#function_skid_number').attr 'placeholder', 'Effective Date (Default Date: Today)'
 		else
 			changeDivSize 'col-md-6', 'col-md-12'
 			$('#function_tag_number').removeClass 'hidden'
@@ -320,6 +356,7 @@ $(document).on 'ready', ->
 			when "CAR" then ajaxCardinalFunction '/main_menu/carton_function', {so_number: $('#function_so_number').val(), line_number: $('#function_line_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			when "SKD" then ajaxCardinalFunction '/main_menu/skid_create_cartons', {so_number: $('#function_so_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			when "Skid" then ajaxCardinalFunction '/main_menu/print_function', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
+			when "SHP" then ajaxCardinalFunction '/main_menu/ship_lines', {so_number: $('#function_so_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
 			else
 				$('#printTagNum').text $('#function_tag_number').val()
 				ajaxCardinalFunction '/main_menu/tag_details', {tag_number: $('#function_tag_number').val(), function_type: $('.function-header').text().match(/[^()]+/g)[0].trim()}
@@ -358,6 +395,7 @@ $(document).on 'ready', ->
 			when "CAR" then buildCAR response if response.status == "Good"
 			when "CTE" then alert 'CTE'
 			when "SKD" then buildSKD response if $.type(response) == "array"
+			when "SHP" then buildSHP response
 			else   
 
 	ajaxItemNumber = (item_number) ->
@@ -388,13 +426,7 @@ $(document).on 'ready', ->
 						if response.result == undefined
 						else
 							response = parseJSONResponse response.result
-
-						#if $('.function-header').text().trim() == "CAR"
-						#	alert 'Valid Carton'
-						#else
-						#	alert 'Please type in valid Carton Item #'
-						#	$('#function_carton_tag').focus()
-
+						
 						if url.trim() == '/main_menu/tag_details'
 						else
 							$('.notification').text 'Successful ' + $(".function-header").text() + ' Transaction!'
