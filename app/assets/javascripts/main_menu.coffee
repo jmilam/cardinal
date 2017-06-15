@@ -7,6 +7,10 @@ $(document).on 'turbolinks:load', ->
 		trigger: 'hover'
 	})
 
+	$('.item_search_btn').on 'click', (e) ->
+		e.preventDefaults
+		ajaxCardinalFunction '/main_menu/item_lookup', {part: $('.item_search').val()}
+		
 $(document).on 'ready', ->
 
 	$('.item_search_btn').on 'click', (e) ->
