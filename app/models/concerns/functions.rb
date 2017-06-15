@@ -107,6 +107,14 @@ class Functions
   	get_request("#{api_url}/transactions/ship_lines", {so_number: request_params[:so_number], user: @user})
   end
 
+  def get_product_lines(api_url, request_params)
+  	get_request("#{api_url}/transactions/bkf_product_lines", {part: request_params[:item_num], user: @user, site: @site})
+  end
+
+  def item_lookup(api_url, request_params)
+  	get_request("#{api_url}/transactions/item_lookup", {part: request_params[:part], user: @user, site: @site})
+  end
+
 	def build_params(function, tag_details, request_params, extra_params=nil)
 		case function
 		when "PCT"
@@ -147,6 +155,8 @@ class Functions
   		{so_number: request_params["so_number"], site: @site, user: @user}
   	when "skid_label"
   		{site: @site, skid_num: request_params, printer: @printer, user_id: @user}
+  	when "BKF"
+  		{part: request_params[:function]["item_num"], qty: request_params[:function]["qty"], prod_line: request_params[:function]["product_line"], user: @user, site: @site}
 		else
 		  p function
 		end

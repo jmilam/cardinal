@@ -1,15 +1,27 @@
 class MainMenuController < ApplicationController
   
   def index
-    @cardinal_functions = {"Inventory" => [["PCT", "Allows ability to change the quantity count on a pallet"], 
+    if session[:user_roles].include? "_ShipContainers"
+      @cardinal_functions = {"Inventory Control" => [["PCT", "Allows ability to change the quantity count on a pallet"], 
                                           ["PDL", "Delete a pallet's inventory."], ["PLO", "Load new product to an existing tag or new tag."], 
-                                          ["PMV", "Move pallet from one location to another"], ["PUL", "Unload inventory from a pallet to a new location."]], 
-                            "Receiving" => [["POR", "View and receive items by a Purchase Order."]], 
-                            "Labels" => [["TPT", "Reprint a tag by number."], ["GLB", "Print a genearl label."], 
+                                          ["PMV", "Move pallet from one location to another"], ["PUL", "Unload inventory from a pallet to a new location."], ["POR", "View and receive items by a Purchase Order."]], 
+                            "Manufacturing" => [["BKF", "Item quantity produced for backflush."]], 
+                            "Label Printing" => [["TPT", "Reprint a tag by number."], ["GLB", "Print a genearl label."], 
                                         ["Skid", "Reprint Label by Skid Number"]], 
-                            "Shipping" => [["CAR", "Create a carton from existing items on a Purchase Order"], 
+                            "Distribution" => [["CAR", "Create a carton from existing items on a Purchase Order"], 
+                                          ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."]]
+                          }
+    else 
+      @cardinal_functions = {"Inventory Control" => [["PCT", "Allows ability to change the quantity count on a pallet"], 
+                                          ["PDL", "Delete a pallet's inventory."], ["PLO", "Load new product to an existing tag or new tag."], 
+                                          ["PMV", "Move pallet from one location to another"], ["PUL", "Unload inventory from a pallet to a new location."], ["POR", "View and receive items by a Purchase Order."]], 
+                            "Manufacturing" => [["BKF", "Item quantity produced for backflush."]], 
+                            "Label Printing" => [["TPT", "Reprint a tag by number."], ["GLB", "Print a genearl label."], 
+                                        ["Skid", "Reprint Label by Skid Number"]], 
+                            "Distribution" => [["CAR", "Create a carton from existing items on a Purchase Order"], 
                                           ["CTE", "Delete Carton."], ["SKD", "Create a new skid and add cartons."], ["SHP", "Shipping"]]
                           }
+    end
     @bg_colors = ["#F26101", "#2C3E50", "#6DBCDB", "#FC4349"]
     @bg_counter = 0
     if session[:logged_in].nil?
@@ -41,7 +53,10 @@ class MainMenuController < ApplicationController
         @response = @function.parse_response_body(@response)
         @success = @response["success"]
       end
-
+    elsif @function_type == "BKF"
+      @response = @function.process_function(@api_url, @function_type, @response, params)
+      @response = @function.parse_response_body(@response)
+      @success = @response["Status"]
     else @function_type
       @response = @function.tag_details(@api_url, params[:function][:tag_number])
       @response = @function.parse_response_body(@response)
@@ -156,6 +171,26 @@ class MainMenuController < ApplicationController
   def ship_lines
     @function = Functions.new(session[:username], session[:site], session[:printer])
     response = @function.get_ship_lines(@api_url, params)
+    response = @function.parse_response_body(response)
+
+    respond_to do |format|
+      format.json {render json: response}
+    end
+  end
+
+  def get_product_lines
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.get_product_lines(@api_url, params)
+    response = @function.parse_response_body(response)
+    
+    respond_to do |format|
+      format.json {render json: response}
+    end
+  end
+
+  def item_lookup
+    @function = Functions.new(session[:username], session[:site], session[:printer])
+    response = @function.item_lookup(@api_url, params)
     response = @function.parse_response_body(response)
 
     respond_to do |format|

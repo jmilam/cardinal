@@ -1,10 +1,14 @@
 //$('.function-notification').html("<%= escape_javascript render(partial: 'alert_area') %>")
-
 $('.custom-text-field').val( '')
-$('.submit').addClass('hidden')
-$('.next-function').removeClass('hidden')
-$('.submit').prop('disabled', false)
-$('.form-fields').children().remove()
+
+if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "BKF") {
+  $('#function_product_line').children('option:gt(0)').remove();
+} else {
+  $('.form-fields').children().remove()
+  $('.submit').addClass('hidden')
+  $('.next-function').removeClass('hidden')
+  $('.submit').prop('disabled', false)
+}
 
 if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "PLO"){
 	$('#function_tag_number').parent().removeClass('col-md-12')

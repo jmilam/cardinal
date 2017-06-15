@@ -2,7 +2,16 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+$(document).on 'turbolinks:load', ->
+	$(".card").flip( {
+		trigger: 'hover'
+	})
+
 $(document).on 'ready', ->
+
+	$('.item_search_btn').on 'click', (e) ->
+		e.preventDefaults
+		ajaxCardinalFunction '/main_menu/item_lookup', {part: $('.item_search').val()}
 
 	setTimeout ->
 		$('.notification').text ''
@@ -244,6 +253,20 @@ $(document).on 'ready', ->
 
 		toggleDivHide $('.next-function'), $('.submit')
 	
+	buildBKF = (response) ->
+		$('<div class="col-md-6"><input placeholder="Item Num" class="form-control custom-text-field" type="text" name="function[item_num]" id="function_item_num"></div>').appendTo $('.form-fields')
+
+		$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[qty]" id="function_qty"></div>').appendTo $('.form-fields')
+
+		$('<div class="col-md-12"><select placeholder="Product Line" class="form-control custom-text-field" type="text" name="function[product_line]" id="function_product_line"><option value="" disabled selected>Select Product Line</option></select></div>').appendTo $('.form-fields')
+
+		toggleDivHide $('.next-function'), $('.submit')
+
+		$('#function_item_num').focus()
+
+		$('#function_item_num').on 'blur', (e) ->
+			ajaxCardinalFunction '/main_menu/get_product_lines', {item_num: $('#function_item_num').val()}
+
 	printTag = (tag_num) ->
 		alert tag_num
 
@@ -330,6 +353,15 @@ $(document).on 'ready', ->
 			$('.carton_tag').addClass 'hidden'	
 			$('.add-skid').addClass 'hidden'
 			$('#function_skid_number').attr 'placeholder', 'Effective Date (Default Date: Today)'
+		else if function_type == "BKF"
+			$('.sales_order').addClass 'hidden'
+			$('.skid_number').addClass 'hidden'
+			$('#function_tag_number').addClass 'hidden'
+			$('.new_tag').addClass 'hidden'
+			$('.line_number').addClass 'hidden'
+			$('.carton_tag').addClass 'hidden'	
+			$('.add-skid').addClass 'hidden'
+			buildBKF 'hello'
 		else
 			changeDivSize 'col-md-6', 'col-md-12'
 			$('#function_tag_number').removeClass 'hidden'
@@ -398,6 +430,10 @@ $(document).on 'ready', ->
 			when "SHP" then buildSHP response
 			else   
 
+	addDataToSelect = (values) ->
+	  $.each values.split(','), (index, value) -> 
+	  	$('#function_product_line').append $('<option value=' + value + '>' + value + '</option>')
+
 	ajaxItemNumber = (item_number) ->
 			$.ajax
 				url: '/main_menu/item_location'
@@ -435,6 +471,18 @@ $(document).on 'ready', ->
 							, 5000
 
 						buildData params['function_type'], response, whole_response
+					else if response.success == "Good" || response.success == "good"
+						if $(".function-header").text() == "BKF"
+							addDataToSelect response.ProdLines
+						else
+							$('#itemModal').children().children().children('.modal-header').children('p').remove()
+							$('#itemModal').children().children().children('.modal-body').children('table').children('tbody').children('tr').remove()
+							$('#itemModal').children().children().children('.modal-header').append '<p class="text-center">' + $('#item_search').val() + '</p>'
+
+							$.each response.INFO, (index, value) ->
+								$('#itemModal').children().children().children('.modal-body').children('table').children('tbody').append '<tr><td>' + value.ttdesc1 + '</td><td>' + value.ttloc + '</td><td>' + value.ttqtyloc + '</td></tr>'
+
+							$('#itemModal').modal 'show'
 					else if response.status == "Good"
 						$('.notification').text 'Successful ' + $(".function-header").text() + ' Transaction!'
 						buildData params['function_type'], response, whole_response

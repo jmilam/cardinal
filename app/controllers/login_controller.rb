@@ -18,6 +18,8 @@ class LoginController < ApplicationController
 				session[:username] = params[:login][:username]
 				session[:site] = params[:login][:site]
 				session[:printer] = params[:login][:printer]
+				session[:user_roles] = JSON.parse(response.body)["user_roles"].split(',')
+				
 				redirect_to main_menu_index_path
 			else
 				flash[:error] = "Login credentials are incorrect."
@@ -29,6 +31,18 @@ class LoginController < ApplicationController
 	  end
   end
 
+  def edit
+  end
+
+  def update
+  	session[:site] = params[:login][:site]
+		session[:printer] = params[:login][:printer]
+
+		flash[:notice] = "Settings updated successfully!"
+
+		redirect_to main_menu_index_path
+  end
+
   def destroy
   	begin
   		flash[:notice] = "Have a great day #{session[:username]}. You have been logged out."
@@ -37,6 +51,7 @@ class LoginController < ApplicationController
   		session.delete(:site)
   		session.delete(:printer)
   		session.delete(:logged_out)
+  		session.delete(:user_roles)
 
   		redirect_to login_index_path
   	rescue Exception => e

@@ -22,6 +22,15 @@
 			    	<li class="notification" style="padding-top:15px;color:#5cb85c;"></li>
 			    <% end %>
 			    <% if current_page?('/main_menu/index') %>
+			    	<li class="col-md-2 col-md-offset-8" style="margin-top:5px;">
+			    		<div class="input-group ">
+			    			<%= text_field_tag :item_search, nil, placeholder: "Item Lookup", class: "form-control text-center item_search" %>
+			    			<span class="input-group-btn">
+					        <button class="btn btn-secondary btn-success item_search_btn" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+					      </span>
+			    		</div>
+			    	</li>
+			    	<li><%= link_to 'Settings', login_edit_path %></li>
 		      	<li><%= link_to 'Logout', login_destroy_path, method: :delete %></li>
 		      <% end %>
 		    </ul>
@@ -46,6 +55,29 @@
 		        <div class="col-sm-6 col-md-6">
 		        <%= link_to 'No Thanks!', "#", remote:true, class: "btn btn-block btn-danger printNo" %>
 		        </div>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade" id="itemModal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header" style="background-color:#d9534f;color:white;">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		      </div>
+		      <div class="modal-body">
+		      	<table class="table table-striped">
+		      		<thead>
+		      			<tr>
+		      				<th>Item Description</th>
+		      				<th>Item Location</th>
+		      				<th>Item Qty</th>
+		      			</tr>
+		      		</thead>
+		      		<tbody>
+		      		</tbody>
+		      	</table>
 		      </div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
