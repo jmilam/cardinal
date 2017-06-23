@@ -11,12 +11,12 @@ if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "BKF") {
 }
 
 if ($('.function-header').text().match(/[^()]+/g)[0].trim() == "PLO"){
-	$('#function_tag_number').parent().removeClass('col-md-12')
-	$('#function_tag_number').parent().addClass('col-md-6')
+	$('#function_tag_number').parents('.tag_number').removeClass('col-md-12')
+	$('#function_tag_number').parents('.tag_number').addClass('col-md-6')
 	$('.new_tag').removeClass('hidden')
 } else {
-	$('#function_tag_number').parent().removeClass('col-md-6')
-	$('#function_tag_number').parent().addClass('col-md-12')
+	$('#function_tag_number').parents('.tag_number').removeClass('col-md-6')
+	$('#function_tag_number').parents('.tag_number').addClass('col-md-12')
 }
 
 if ("<%= @success %>"){

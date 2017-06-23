@@ -58,6 +58,14 @@ $(document).on 'ready', ->
 	  spinner = new Spinner(opts).spin(target)
 	  $(target).data('spinner', spinner)
 
+	  if $(".function-header").text() == "PUL" || $(".function-header").text() == "PCT"
+	  	if $("#function_move_qty").val() == "" || parseInt($("#function_move_qty").val()) <= 0
+	    	e.preventDefault()
+	    	$('#spin').data('spinner').stop()
+	    	alert 'You must have a quantity you are moving that is not less than or equal to 0.'
+	    else
+
+
 	  $.each $('.bo_check:checked'), (index, value) ->
 	    $(this).siblings().first().attr 'disabled', true
 
@@ -86,8 +94,8 @@ $(document).on 'ready', ->
 		clearCards
 
 	changeDivSize = (from_size, to_size) ->
-		$('#function_tag_number').parent().removeClass from_size 
-		$('#function_tag_number').parent().addClass to_size
+		$('#function_tag_number').parents('.tag_number').removeClass from_size 
+		$('#function_tag_number').parents('.tag_number').addClass to_size
 		return
 
 	toggleDivHide = (div_hide, div_show) ->
@@ -103,7 +111,7 @@ $(document).on 'ready', ->
 	buildPCT = (response) ->
 		changeDivSize 'col-md-12', 'col-md-6'
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
-		$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">Update Qty</div><input placeholder="" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div></div>').appendTo $('.form-fields')
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 		$('<div class="col-md-6 col-md-offset-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 		toggleDivHide $('.next-function'), $('.submit')
@@ -115,11 +123,11 @@ $(document).on 'ready', ->
 		changeDivSize 'col-md-12', 'col-md-6'
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">From Location</div><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">To Location</div><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 
@@ -131,13 +139,14 @@ $(document).on 'ready', ->
 	buildPMV = (response) ->
 
 		changeDivSize 'col-md-12', 'col-md-6'
+
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">From Location</div><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">To Location</div><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 
@@ -152,15 +161,15 @@ $(document).on 'ready', ->
 		changeDivSize 'col-md-12', 'col-md-6'
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttitem + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">From Location</div><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_location]" id="function_from_location"></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">' + response.ttdesc1 + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">To Location</div><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_location]" id="function_to_location"></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6 text-center" style="padding-top:15px;height:50px;margin-bottom:10px;">Current Tag Qty: ' + response.ttqtyloc + '</div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="Move Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">Move Qty</div><input placeholder="Move Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
 
 		$('<div class="col-md-6" style="padding-top:15px;height:50px;margin-bottom:10px;"></div>').appendTo $('.form-fields')
 
@@ -189,23 +198,34 @@ $(document).on 'ready', ->
 	buildPLO = (response, whole_response) ->
 		if $.type(response) == "object"
 			if whole_response.success == false
-				$('<div class="col-md-6 text-center"><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number"></div>').appendTo $('.form-fields')
+				$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">Item Number</div><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number"></div>').appendTo $('.form-fields')
 			else
-				$('<div class="col-md-6 text-center"><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number" value=' + response.ttitem + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="From Site" class="form-control custom-text-field" type="text" name="function[from_site]" id="function_from_site" value=' + response.ttsite + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="To Site" class="form-control custom-text-field" type="text" name="function[to_site]" id="function_to_site" value=' + response.ttsite + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_loc]" id="function_from_location"></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_loc]" id="function_to_location"  value=' + response.ttloc + '></div>').appendTo $('.form-fields')
+				$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">Item Number</div><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number" value=' + response.ttitem + '></div>').appendTo $('.form-fields')
+			
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">Qty</div><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">From Site</div><input placeholder="From Site" class="form-control custom-text-field" type="text" name="function[from_site]" id="function_from_site" value=' + response.ttsite + '></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">To Site</div><input placeholder="To Site" class="form-control custom-text-field" type="text" name="function[to_site]" id="function_to_site" value=' + response.ttsite + '></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">From Location</div><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_loc]" id="function_from_location"></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">To Location</div><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_loc]" id="function_to_location"  value=' + response.ttloc + '></div>').appendTo $('.form-fields')
 
 		else
 			$('#function_tag_number').val response
-			$('<div class="col-md-6 text-center"><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number"></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="From Site" class="form-control custom-text-field" type="text" name="function[from_site]" id="function_from_site" value=' + whole_response.site + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="To Site" class="form-control custom-text-field" type="text" name="function[to_site]" id="function_to_site" value=' + whole_response.site + '></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_loc]" id="function_from_location"></div>').appendTo $('.form-fields')
-			$('<div class="col-md-6"><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_loc]" id="function_to_location"></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">Item Number</div><input placeholder="Item Number" class="form-control custom-text-field" type="text" name="function[item_number]" id="function_item_number"></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">Qty</div><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[move_qty]" id="function_move_qty"></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">From Site</div><input placeholder="From Site" class="form-control custom-text-field" type="text" name="function[from_site]" id="function_from_site" value=' + whole_response.site + '></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">To Site</div><input placeholder="To Site" class="form-control custom-text-field" type="text" name="function[to_site]" id="function_to_site" value=' + whole_response.site + '></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">From Location</div><input placeholder="From Location" class="form-control custom-text-field" type="text" name="function[from_loc]" id="function_from_location"></div>').appendTo $('.form-fields')
+
+			$('<div class="form-group"><div class="col-md-6" style="padding-top:15px;"><div class="input-group"><div class="input-group-addon">To Location</div><input placeholder="To Location" class="form-control custom-text-field" type="text" name="function[to_loc]" id="function_to_location"></div>').appendTo $('.form-fields')
 			#$('#function_tag_number').val response
 			
 		$('#function_item_number').focus()
@@ -243,7 +263,6 @@ $(document).on 'ready', ->
 		toggleDivHide $('.next-function'), $('.add-skid')
 
 	buildSHP = (response) ->
-		console.log response
 		$('<div class="col-md-12" style="height:450px;overflow-x: scroll;"><table class= "table table-striped shpTable"><thead><tr><th class="text-center">Line Number</th><th></th><th class="text-center">Item</th><th></th><th class="text-center">Qty Ordered</th><th class="text-center">Qty Shipped</th><th class="text-center">Open Qty</th><th class="text-center">Cancel B/O</th><th class="text-center">Qty To Ship</th><th class="text-center">Location</th><th class="text-center">Tag/Ref</th></thead><tbody></tbody></table></div>').appendTo $('.form-fields')
 
 		$.each response, (index, value) ->
@@ -258,11 +277,11 @@ $(document).on 'ready', ->
 		toggleDivHide $('.next-function'), $('.submit')
 	
 	buildBKF = (response) ->
-		$('<div class="col-md-6"><input placeholder="Item Num" class="form-control custom-text-field" type="text" name="function[item_num]" id="function_item_num"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">Item Number</div><input placeholder="Item Num" class="form-control custom-text-field" type="text" name="function[item_num]" id="function_item_num"></div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-6"><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[qty]" id="function_qty"></div>').appendTo $('.form-fields')
+		$('<div class="form-group"><div class="col-md-6"><div class="input-group"><div class="input-group-addon">Qty</div><input placeholder="Qty" class="form-control custom-text-field" type="text" name="function[qty]" id="function_qty"></div>').appendTo $('.form-fields')
 
-		$('<div class="col-md-12"><select placeholder="Product Line" class="form-control custom-text-field" type="text" name="function[product_line]" id="function_product_line"><option value="" disabled selected>Select Product Line</option></select></div>').appendTo $('.form-fields')
+		$('<div class="col-md-12" style="padding-top:15px;"><select placeholder="Product Line" class="form-control custom-text-field" type="text" name="function[product_line]" id="function_product_line"><option value="" disabled selected>Select Product Line</option></select></div>').appendTo $('.form-fields')
 
 		toggleDivHide $('.next-function'), $('.submit')
 
@@ -308,7 +327,8 @@ $(document).on 'ready', ->
 			$('.add-skid').addClass 'hidden'
 		else if function_type == "POR"
 			changeDivSize 'col-md-6', 'col-md-12'
-			$('#function_tag_number').attr 'placeholder', "Enter Purchase Order Number"
+			$('#function_tag_number').siblings().text('Purchase Order Number')
+			#$('#function_tag_number').attr 'placeholder', "Enter Purchase Order Number"
 			$('#function_tag_number').removeClass 'hidden'
 			$('.tag_number').removeClass 'hidden'
 			$('.new_tag').addClass 'hidden'
@@ -360,6 +380,7 @@ $(document).on 'ready', ->
 		else if function_type == "BKF"
 			$('.sales_order').addClass 'hidden'
 			$('.skid_number').addClass 'hidden'
+			$('#function_tag_number').siblings().addClass 'hidden'
 			$('#function_tag_number').addClass 'hidden'
 			$('.new_tag').addClass 'hidden'
 			$('.line_number').addClass 'hidden'
@@ -378,11 +399,14 @@ $(document).on 'ready', ->
 			$('.add-skid').addClass 'hidden'
 
 			if $(".function-header").text() == "Skid"
-				$('#function_tag_number').attr 'placeholder', "Enter Existing Skid Number for reprint"
+				$('#function_tag_number').siblings().text 'Enter Existing Skid Number for reprint'
+				#$('#function_tag_number').attr 'placeholder', "Enter Existing Skid Number for reprint"
 			else if $(".function-header").text() == "GLB"
-				$('#function_tag_number').attr 'placeholder', 'Enter General Label Text (limit: 15 characters)'
+				$('#function_tag_number').siblings().text 'Enter General Label Text (limit: 15 characters)'
+				#$('#function_tag_number').attr 'placeholder', 'Enter General Label Text (limit: 15 characters)'
 			else
-				$('#function_tag_number').attr 'placeholder', "Enter Existing Tag Number"
+				$('#function_tag_number').siblings().text('Enter Existing Tag Number')
+				#$('#function_tag_number').attr 'placeholder', "Enter Existing Tag Number"
 
 	$('.next-function').on 'click', ->
 		switch $('.function-header').text().match(/[^()]+/g)[0].trim()
@@ -446,6 +470,7 @@ $(document).on 'ready', ->
 				data: item_number: item_number
 				success: (response) ->
 					if response.success == "Good"
+						console.log response
 						response = parseJSONResponse response.Location
 						if $('.function-header').text() == "PLO"
 							$('#function_from_location').val response
@@ -455,6 +480,7 @@ $(document).on 'ready', ->
 						response = parseJSONResponse response.success
 
 	ajaxCardinalFunction = (url, params) ->
+			console.log url
 			$.ajax
 				url: url
 				type: 'GET'
@@ -484,7 +510,8 @@ $(document).on 'ready', ->
 							$('#itemModal').children().children().children('.modal-header').append '<p class="text-center">' + $('#item_search').val() + '</p>'
 
 							$.each response.INFO, (index, value) ->
-								$('#itemModal').children().children().children('.modal-body').children('table').children('tbody').append '<tr><td>' + value.ttdesc1 + '</td><td>' + value.ttloc + '</td><td>' + value.ttqtyloc + '</td></tr>'
+								console.log value
+								$('#itemModal').children().children().children('.modal-body').children('table').children('tbody').append '<tr><td>' + value.ttdesc1 + '</td><td>' + value.ttloc + '</td><td>' + value.ttqtyloc + '</td><td>' + value.tttag + '</td></tr>'
 
 							$('#itemModal').modal 'show'
 					else if response.status == "Good"
