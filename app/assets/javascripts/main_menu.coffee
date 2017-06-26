@@ -53,7 +53,7 @@ $(document).on 'ready', ->
 	  else if $(this).val().length == 5
 	  	$('#function_skid_number').val $('#function_skid_number').val() + '/'
 
-	$('.submit').on 'click', (e) ->
+	$('.submit, .add-skid').on 'click', (e) ->
 	  target = document.getElementById('spin')
 	  spinner = new Spinner(opts).spin(target)
 	  $(target).data('spinner', spinner)
@@ -346,6 +346,7 @@ $(document).on 'ready', ->
 			$('.skid_number').addClass 'hidden'
 			$('.add-skid').addClass 'hidden'
 		else if function_type == "CTE"
+			$('#function_tag_number').siblings().addClass 'hidden'
 			$('#function_tag_number').addClass 'hidden'
 			$('.carton_tag').removeClass 'hidden'
 			$('.carton_tag').attr 'placeholder', 'Enter Carton #'
@@ -360,6 +361,7 @@ $(document).on 'ready', ->
 			$('.sales_order').children().val ''
 			$('.skid_number').removeClass 'hidden'
 			$('.skid_number').children().val ''
+			$('#function_tag_number').siblings().addClass 'hidden'
 			$('#function_tag_number').addClass 'hidden'
 			$('.new_tag').addClass 'hidden'
 			$('.line_number').addClass 'hidden'
@@ -371,6 +373,7 @@ $(document).on 'ready', ->
 			$('.sales_order').children().val ''
 			$('.skid_number').removeClass 'hidden'
 			$('.skid_number').children().val ''
+			$('#function_tag_number').siblings().addClass 'hidden'
 			$('#function_tag_number').addClass 'hidden'
 			$('.new_tag').addClass 'hidden'
 			$('.line_number').addClass 'hidden'
@@ -454,7 +457,7 @@ $(document).on 'ready', ->
 			when "POR" then buildPOR response if response.Status == true
 			when "CAR" then buildCAR response if response.status == "Good"
 			when "CTE" then alert 'CTE'
-			when "SKD" then buildSKD response if $.type(response) == "array"
+			when "SKD" then buildSKD response if $.type(response) == "array" 
 			when "SHP" then buildSHP response
 			else   
 
@@ -470,7 +473,6 @@ $(document).on 'ready', ->
 				data: item_number: item_number
 				success: (response) ->
 					if response.success == "Good"
-						console.log response
 						response = parseJSONResponse response.Location
 						if $('.function-header').text() == "PLO"
 							$('#function_from_location').val response
@@ -480,7 +482,6 @@ $(document).on 'ready', ->
 						response = parseJSONResponse response.success
 
 	ajaxCardinalFunction = (url, params) ->
-			console.log url
 			$.ajax
 				url: url
 				type: 'GET'
@@ -500,6 +501,10 @@ $(document).on 'ready', ->
 								$('.notification').text ''
 							, 5000
 
+						if $('.function-header').text() == "SKD" && $('.form-fields').children().size() != 0
+							$('tr[selected]').remove()
+							$('#spin').data('spinner').stop()
+
 						buildData params['function_type'], response, whole_response
 					else if response.success == "Good" || response.success == "good"
 						if $(".function-header").text() == "BKF"
@@ -510,7 +515,6 @@ $(document).on 'ready', ->
 							$('#itemModal').children().children().children('.modal-header').append '<p class="text-center">' + $('#item_search').val() + '</p>'
 
 							$.each response.INFO, (index, value) ->
-								console.log value
 								$('#itemModal').children().children().children('.modal-body').children('table').children('tbody').append '<tr><td>' + value.ttdesc1 + '</td><td>' + value.ttloc + '</td><td>' + value.ttqtyloc + '</td><td>' + value.tttag + '</td></tr>'
 
 							$('#itemModal').modal 'show'

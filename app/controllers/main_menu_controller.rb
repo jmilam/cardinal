@@ -41,6 +41,7 @@ class MainMenuController < ApplicationController
     if @function_type == "POR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
+      @success = @response["success"]
     elsif @function_type == "CAR"
       @response = @function.process_function(@api_url, @function_type, @response, params)
       @response = @function.parse_response_body(@response)
@@ -166,6 +167,10 @@ class MainMenuController < ApplicationController
     @function = Functions.new(session[:username], session[:site], session[:printer])
     response = @function.add_cartons_to_skid(@api_url, params)
     response = @function.parse_response_body(response)
+
+    respond_to do |format|
+      format.json {render json: response}
+    end
   end
 
   def ship_lines
